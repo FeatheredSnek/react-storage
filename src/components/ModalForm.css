@@ -1,0 +1,47 @@
+.Form-grid {
+  min-width: 400px;
+  display: grid;
+  column-gap: 24px;
+  grid-template-areas: 
+    'item item'
+    'units price'
+    'date date'
+  ;
+}
+
+.Form-item {
+  grid-area: item;
+}
+
+
+.Form-units {
+  grid-area: units;
+}
+
+
+.Form-price {
+  grid-area: price;
+}
+
+
+.Form-date {
+  grid-area: date;
+}
+
+.Form-input {
+  width: 100%;
+}
+
+.Form-item--label {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.Form-item--label span {
+  margin-right: 0; /* fix for Tag component default margin */
+}
+
+.Form-item label {
+  width: 100%
+}
