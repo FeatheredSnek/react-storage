@@ -74,7 +74,7 @@ const outboundsSlice = createSlice({
   }
 })
 
-export default outboundsSlice
+export default outboundsSlice.reducer
 
 export const { outboundAdded, outboundRemoved } = outboundsSlice.actions
 

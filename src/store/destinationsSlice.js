@@ -1,6 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit"
 
-const initialState = []
+const initialState = [
+  {
+    id: "d1",
+    label: "Skyscraper"
+  },
+  {
+    id: "d2",
+    label: "Hospital building"
+  }
+]
 
 const destinationsSlice = createSlice({
   name: "destinations",
@@ -20,4 +29,4 @@ const destinationsSlice = createSlice({
 export const { destinationAdded, destinationRemoved } =
   destinationsSlice.actions
 
-export default destinationsSlice
+export default destinationsSlice.reducer

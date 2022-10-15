@@ -29,7 +29,7 @@ const itemsSlice = createSlice({
   }
 })
 
-export default itemsSlice
+export default itemsSlice.reducer
 
 export const { itemAdded, itemRemoved } = itemsSlice.actions
 

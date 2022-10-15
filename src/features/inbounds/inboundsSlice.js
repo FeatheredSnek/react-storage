@@ -70,11 +70,14 @@ const inboundsSlice = createSlice({
   }
 })
 
-export default inboundsSlice
+export default inboundsSlice.reducer
 
 export const { inboundAdded, inboundRemoved } = inboundsSlice.actions
 
-export const selectAllInbounds = (state) => state.inbounds
+export const selectAllInbounds = (state) =>
+  state.inbounds.map((inbound) => {
+    return { ...inbound, itemName: getItemName(state, inbound.item_id) }
+  })
 export const selectInboundData = (state, inboundId) =>
   state.inbounds.find((el) => el.id === inboundId)
 export const selectInbound = (state, inboundId) => {
