@@ -1,11 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit"
 
-const initialState = [
-
-]
+const initialState = []
 
 const destinationsSlice = createSlice({
-  name: 'destinations',
+  name: "destinations",
   initialState,
   reducers: {
     destinationAdded(state, action) {
@@ -14,11 +12,12 @@ const destinationsSlice = createSlice({
     // dangerous - prompt before - has to cascaded remove all outbounds directed
     // to this destination id
     destinationRemoved(state, action) {
-      state.filter(el => el.id !== action.payload)
+      state.filter((el) => el.id !== action.payload)
     }
   }
 })
 
-export const { destinationAdded, destinationRemoved } = destinationsSlice.actions
+export const { destinationAdded, destinationRemoved } =
+  destinationsSlice.actions
 
 export default destinationsSlice

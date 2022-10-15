@@ -35,12 +35,14 @@ export const { itemAdded, itemRemoved } = itemsSlice.actions
 
 export const getItemName = (state, itemId) =>
   state.items.find((item) => item.id === itemId).name
+
 export const getItemAveragePrice = (state, itemId) => {
   const itemInbounds = state.inbounds.filter(
     (inbound) => inbound.item_id === itemId
   )
   return (
-    itemInbounds.reduce((previous, current) => previous + current) /
-    itemInbounds.length
+    itemInbounds.reduce((previous, current) => {
+      return previous + current.price
+    }, 0) / itemInbounds.length
   )
 }
