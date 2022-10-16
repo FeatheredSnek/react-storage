@@ -46,3 +46,11 @@ export const getItemAveragePrice = (state, itemId) => {
     }, 0) / itemInbounds.length
   )
 }
+
+export const getAllItems = (state) => {
+  return state.items.map(el => {
+    return {
+      ...el
+    }
+  })
+}
