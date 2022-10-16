@@ -78,10 +78,14 @@ export const selectAllInbounds = (state) =>
   state.inbounds.map((inbound) => {
     return { ...inbound, itemName: getItemName(state, inbound.item_id) }
   })
-export const selectInboundData = (state, inboundId) =>
-  state.inbounds.find((el) => el.id === inboundId)
+
+export const selectInboundData = (state, inboundId) => {
+  return { ...state.inbounds.find((el) => el.id === inboundId) }
+}
+
 export const selectInbound = (state, inboundId) => {
   const inbound = state.inbounds.find((inbound) => inbound.id === inboundId)
+  if (!inbound) return null
   return {
     ...inbound,
     itemName: getItemName(state, inbound.item_id)

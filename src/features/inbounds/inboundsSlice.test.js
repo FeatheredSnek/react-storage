@@ -72,6 +72,10 @@ test("should return inbound data with item name given proper inbound id", () => 
   expect(selectInbound(mockdata, "inbound1")).toStrictEqual(result)
 })
 
-test('should return all inbounds with item names', () => { 
+test("should return all inbounds with item names", () => {
   expect(selectAllInbounds(mockdata)).toStrictEqual(result2)
+})
+
+test("should return null given non-existent inbound id", () => {
+  expect(selectInbound(mockdata, "invalid-id")).toBeNull()
 })
