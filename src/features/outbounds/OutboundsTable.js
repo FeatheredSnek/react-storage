@@ -16,7 +16,8 @@ const staticCols = [
   {
     title: "Price per unit (average)",
     dataIndex: "itemAveragePrice",
-    key: "itemAveragePrice"
+    key: "itemAveragePrice",
+    render: (data) => data.toFixed(2)
   },
   {
     title: "Quantity",
@@ -67,7 +68,7 @@ const OutboundsTable = ({ tableData }) => {
         open={isModalOpen}
         modalCloseHandler={closeModal}
         actionType="edit"
-        actionScope="inbound"
+        actionScope="outbound"
         actionId={formItemId}
       />
       <Table

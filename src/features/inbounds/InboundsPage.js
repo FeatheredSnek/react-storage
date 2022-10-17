@@ -1,13 +1,27 @@
 import React from "react"
-import InboundsHeader from "./InboundsHeader"
+import { useSelector } from "react-redux"
+import { selectAllInbounds } from "./inboundsSlice"
+
+import TableHeader from "../../components/TableHeader"
 import InboundsTable from "./InboundsTable"
 
 const InboundsPage = () => {
+  const tableData = useSelector(selectAllInbounds)
+  const totalValue = tableData
+    .reduce((previous, current) => {
+      return previous + current.price * current.units
+    }, 0)
+    .toFixed(2)
 
   return (
     <>
-      <InboundsHeader/>
-      <InboundsTable/>
+      <TableHeader
+        title="Inbounds"
+        subTitle={`${totalValue} PLN`}
+        actionScope="inbound"
+        actionId={null}
+      />
+      <InboundsTable tableData={tableData} />
     </>
   )
 }

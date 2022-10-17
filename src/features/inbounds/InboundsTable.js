@@ -1,7 +1,5 @@
 import React, { useState } from "react"
-import { useSelector } from "react-redux"
 import { Table, Space, Divider, Typography } from "antd"
-import { selectAllInbounds } from "./inboundsSlice"
 import ModalForm from "../../components/ModalForm"
 
 const staticCols = [
@@ -18,7 +16,8 @@ const staticCols = [
   {
     title: "Price per unit",
     dataIndex: "price",
-    key: "price"
+    key: "price",
+    render: (data) => data.toFixed(2)
   },
   {
     title: "Quantity",
@@ -27,11 +26,9 @@ const staticCols = [
   }
 ]
 
-const InboundsTable = ({ editHandler }) => {
+const InboundsTable = ({ tableData }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [formItemId, setFormItemId] = useState(null)
-
-  const tableData = useSelector(selectAllInbounds)
 
   const closeModal = () => {
     setIsModalOpen(false)

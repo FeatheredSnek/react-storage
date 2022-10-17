@@ -87,7 +87,7 @@ export const selectOutboundsByDestinationId = (state, destinationId) => {
     const itemAveragePrice = getItemAveragePrice(
       state,
       outbound.item_id
-    ).toFixed(2)
+    )
     return {
       ...outbound,
       itemName,
@@ -95,4 +95,13 @@ export const selectOutboundsByDestinationId = (state, destinationId) => {
     }
   })
   return outbounds
+}
+
+export const selectOutbound = (state, outboundId) => {
+  const outbound = state.outbounds.find((outbound) => outbound.id === outboundId)
+  if (!outbound) return null
+  return {
+    ...outbound,
+    itemName: getItemName(state, outbound.item_id)
+  }
 }

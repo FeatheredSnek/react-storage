@@ -10,7 +10,8 @@ const staticCols = [
   {
     title: "Avg. price per unit",
     dataIndex: "price",
-    key: "price"
+    key: "price",
+    render: (data) => data.toFixed(2)
   },
   {
     title: "Inbound total",
