@@ -70,13 +70,17 @@ const outboundsSlice = createSlice({
     },
     outboundRemoved(state, action) {
       state.filter((el) => el.id !== action.payload)
+    },
+    outboundEdited(state, action) {
+      const index = state.findIndex(el => el.id === action.payload.editedId)
+      state[index] = {...state[index], ...action.payload}
     }
   }
 })
 
 export default outboundsSlice.reducer
 
-export const { outboundAdded, outboundRemoved } = outboundsSlice.actions
+export const { outboundAdded, outboundRemoved, outboundEdited } = outboundsSlice.actions
 
 export const selectOutboundsByDestinationId = (state, destinationId) => {
   const filtered = state.outbounds.filter(
