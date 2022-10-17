@@ -2,11 +2,21 @@
   min-width: 400px;
   display: grid;
   column-gap: 24px;
+}
+
+.Form-grid--inbound {
   grid-template-areas: 
-    'item item'
-    'units price'
-    'date date'
-  ;
+  'item item'
+  'units price'
+  'date date'
+;
+}
+
+.Form-grid--outbound {
+  grid-template-areas: 
+  'item'
+  'units'
+  'date'
 }
 
 .Form-item {
