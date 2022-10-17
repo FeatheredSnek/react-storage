@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { useSelector } from "react-redux"
+import { useSelector, useDispatch } from "react-redux"
 import {
   Modal,
   Form,
@@ -9,11 +9,23 @@ import {
   DatePicker,
   Tag
 } from "antd"
-import { selectInbound } from "../features/inbounds/inboundsSlice"
-import { getAllItems } from "../store/itemsSlice"
+import {
+  selectInbound,
+  inboundAdded,
+  inboundEdited
+} from "../features/inbounds/inboundsSlice"
+import {
+  selectOutbound,
+  outboundAdded,
+  outboundEdited
+} from "../features/outbounds/outboundsSlice"
+import { itemAdded, getAllItems } from "../store/itemsSlice"
+
+// temporary, uid generation will ultimately occur server-side
+import { nanoid } from "@reduxjs/toolkit"
+
 import moment from "moment"
 import "./ModalForm.css"
-import { selectOutbound } from "../features/outbounds/outboundsSlice"
 
 const ModalForm = ({
   open,
@@ -33,6 +45,8 @@ const ModalForm = ({
 
   const [isNewItem, setIsNewItem] = useState(false)
   const [form] = Form.useForm()
+
+  const dispatch = useDispatch()
 
   useEffect(() => {
     if (open) form.resetFields()
@@ -59,32 +73,67 @@ const ModalForm = ({
   }
 
   const handleSubmit = () => {
-    // preparation:
-    // if there is an edited item data check if current values have changed
-    // if not then just close the modal and notify that no data is changed
-    // if yes, check if theres a new item
+    // if no form field was touched close form and...
+    const fieldNames = ["itemName", "price", "units", "date"]
+    const touched = fieldNames.map((e) => form.isFieldTouched(e))
+    if (!touched.includes(true)) {
+      console.log('no changes');// ...notify that no data has been changed
+      modalCloseHandler()
+      return
+    }
+
     form
       .validateFields()
       .then((values) => {
-        let type = ''
-        if (actionType === 'edit') {
-          if (actionScope === 'inbound') {
-            type = 'edit inbound record with ID ' + actionId
+        if (isNewItem) {
+          // is this the creative var usage that the guy at medium wrote about?
+          var itemPayload = {
+            id: nanoid(),
+            name: values.itemName
           }
-          else if (actionScope === 'outbound') {
-            type = 'edit outbound record with ID ' + actionId
+          dispatch(itemAdded(itemPayload))
+        }
+
+        const id = nanoid()
+        const item_id = isNewItem
+          ? itemPayload.id
+          : allItems.find((i) => i.name === values.itemName).id
+        const date =
+          values.date instanceof moment
+            ? values.date.format("YYYY-MM-DD")
+            : values.date
+        const created_at = new Date().toISOString()
+        const { price, units } = values
+        const destination = actionId
+
+        if (actionType === "add") {
+          if (actionScope === "inbound") {
+            dispatch(
+              inboundAdded({ id, item_id, date, created_at, price, units })
+            )
+          } else if (actionScope === "outbound") {
+            dispatch(
+              outboundAdded({
+                id,
+                item_id,
+                date,
+                created_at,
+                units,
+                destination
+              })
+            )
+          }
+        } else if (actionType === "edit") {
+          if (actionScope === "inbound") {
+            dispatch(
+              inboundEdited({ editedId: actionId, item_id, date, units, price })
+            )
+          } else if (actionScope === "outbound") {
+            dispatch(
+              outboundEdited({ editedId: actionId, item_id, date, units })
+            )
           }
         }
-        else if (actionType === 'add') {
-          if (actionScope === 'inbound') {
-            type = 'adding a record to inbounds table'
-          }
-          else if (actionScope === 'outbound') {
-            type = 'adding a record to outbounds table with destination ID ' + actionId
-          }
-        }
-        console.log(type);
-        console.log(JSON.stringify(console.log(values)))
         modalCloseHandler()
       })
       .catch((err) => console.warn(err))
@@ -102,11 +151,8 @@ const ModalForm = ({
   }
 
   const handleFieldChange = (field) => {
-    if (
-      field.name[0] === "itemName" &&
-      field.touched &&
-      !allItems.find((item) => item.name === field.value)
-    ) {
+    if (field.name[0] !== "itemName") return
+    if (field.touched && !allItems.find((item) => item.name === field.value)) {
       setIsNewItem(true)
     } else {
       setIsNewItem(false)
@@ -119,7 +165,7 @@ const ModalForm = ({
       open={open}
       onOk={handleSubmit}
       onCancel={handleCancel}
-      title={formTitle()}
+      title={formTitle() + " + " + isNewItem}
     >
       <Form
         form={form}
