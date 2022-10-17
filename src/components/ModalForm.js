@@ -66,7 +66,25 @@ const ModalForm = ({
     form
       .validateFields()
       .then((values) => {
-        console.log(values)
+        let type = ''
+        if (actionType === 'edit') {
+          if (actionScope === 'inbound') {
+            type = 'edit inbound record with ID ' + actionId
+          }
+          else if (actionScope === 'outbound') {
+            type = 'edit outbound record with ID ' + actionId
+          }
+        }
+        else if (actionType === 'add') {
+          if (actionScope === 'inbound') {
+            type = 'adding a record to inbounds table'
+          }
+          else if (actionScope === 'outbound') {
+            type = 'adding a record to outbounds table with destination ID ' + actionId
+          }
+        }
+        console.log(type);
+        console.log(JSON.stringify(console.log(values)))
         modalCloseHandler()
       })
       .catch((err) => console.warn(err))
