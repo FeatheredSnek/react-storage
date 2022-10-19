@@ -18,6 +18,8 @@ import { nanoid } from "@reduxjs/toolkit"
 
 import moment from "moment"
 import "../../components/ModalForm.css"
+import notifications from "../../components/notifications"
+
 
 const InboundForm = ({
   open,
@@ -79,7 +81,7 @@ const InboundForm = ({
     const fieldNames = ["itemName", "price", "units", "date"]
     const touched = fieldNames.map((e) => form.isFieldTouched(e))
     if (!touched.includes(true)) {
-      console.log("no changes") // ...notify that no data has been changed
+      notifications.noChange() // ...notify that no data has been changed
       modalCloseHandler()
       return
     }
@@ -117,6 +119,7 @@ const InboundForm = ({
           )
         }
         setIsTooltipOpen(false)
+        notifications.success()
         modalCloseHandler()
       })
       .catch((err) => console.warn(err))
