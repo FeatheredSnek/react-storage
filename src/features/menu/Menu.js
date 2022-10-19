@@ -5,7 +5,7 @@ import {
   HomeOutlined,
   AppstoreOutlined,
   ImportOutlined,
-  ExportOutlined
+  LogoutOutlined
 } from "@ant-design/icons"
 import { Menu as AntMenu } from "antd"
 
@@ -40,7 +40,7 @@ const Menu = () => {
     },
     {
       key: "outbounds",
-      icon: <ExportOutlined />,
+      icon: <LogoutOutlined />,
       label: "Outbounds",
       children: []
     }
