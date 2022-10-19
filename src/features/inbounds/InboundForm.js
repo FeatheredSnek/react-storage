@@ -7,7 +7,8 @@ import {
   AutoComplete,
   InputNumber,
   DatePicker,
-  Tag
+  Tag,
+  Tooltip
 } from "antd"
 import { selectInbound, inboundAdded, inboundEdited } from "./inboundsSlice"
 import { itemAdded, getAllItems } from "../../store/itemsSlice"
@@ -18,7 +19,13 @@ import { nanoid } from "@reduxjs/toolkit"
 import moment from "moment"
 import "../../components/ModalForm.css"
 
-const InboundForm = ({ open, modalCloseHandler, actionType, actionId }) => {
+const InboundForm = ({
+  open,
+  modalCloseHandler,
+  actionType,
+  actionId,
+  disableItemEdit
+}) => {
   const editedItemData = useSelector((state) => selectInbound(state, actionId))
   const allItems = useSelector(getAllItems)
 
@@ -35,10 +42,26 @@ const InboundForm = ({ open, modalCloseHandler, actionType, actionId }) => {
     return { value: el.name }
   })
 
+  const [isTooltipOpen, setIsTooltipOpen] = useState(false)
+
+  const handleTooltip = () => {
+    setIsTooltipOpen(!isTooltipOpen)
+  }
+
   const itemLabel = () => {
     return (
       <div className="Form-item--label">
-        <span>Item</span>
+        {disableItemEdit ? (
+          <Tooltip
+            open={isTooltipOpen}
+            placement="right"
+            title="Last inbound of this kind, cannot edit"
+          >
+            <span>Item</span>
+          </Tooltip>
+        ) : (
+          <span>Item</span>
+        )}
         {isNewItem ? <Tag color="blue">New item type</Tag> : ""}
       </div>
     )
@@ -93,12 +116,14 @@ const InboundForm = ({ open, modalCloseHandler, actionType, actionId }) => {
             inboundEdited({ editedId: actionId, item_id, date, units, price })
           )
         }
+        setIsTooltipOpen(false)
         modalCloseHandler()
       })
       .catch((err) => console.warn(err))
   }
 
   const handleCancel = () => {
+    setIsTooltipOpen(false)
     modalCloseHandler()
   }
 
@@ -119,6 +144,7 @@ const InboundForm = ({ open, modalCloseHandler, actionType, actionId }) => {
 
   return (
     <Modal
+      destroyOnClose
       mask={false}
       open={open}
       onOk={handleSubmit}
@@ -149,6 +175,9 @@ const InboundForm = ({ open, modalCloseHandler, actionType, actionId }) => {
           ]}
         >
           <AutoComplete
+            onMouseEnter={handleTooltip}
+            onMouseLeave={handleTooltip}
+            disabled={disableItemEdit}
             options={options}
             filterOption={(inputValue, option) =>
               option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !==

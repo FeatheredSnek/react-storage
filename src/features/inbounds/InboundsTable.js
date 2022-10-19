@@ -29,16 +29,30 @@ const staticCols = [
   }
 ]
 
+const lastOfKind = (data, id) => {
+  const itemId = data.find((el) => el.id === id).item_id
+  const otherRemaining = Boolean(
+    data.find((el) => el.id !== id && el.item_id === itemId)
+  )
+  return !otherRemaining
+}
+
 const InboundsTable = ({ tableData }) => {
   const [isModalFormOpen, setIsModalFormOpen] = useState(false)
   const [formItemId, setFormItemId] = useState(null)
+  const [isEditedLastOfKind, setIsEditedLastOfKind] = useState(false)
 
   const closeModalForm = () => {
+    setFormItemId(null)
+    setIsEditedLastOfKind(false)
     setIsModalFormOpen(false)
   }
 
   const openModalForm = (id) => {
-    console.log(`opening modal form, passed in id ${id}`)
+    console.log(lastOfKind(tableData, id))
+    if (lastOfKind(tableData, id)) {
+      setIsEditedLastOfKind(true)
+    }
     setFormItemId(id)
     setIsModalFormOpen(true)
   }
@@ -48,11 +62,7 @@ const InboundsTable = ({ tableData }) => {
   const [deletedInboundId, setDeletedInboundId] = useState(null)
 
   const deleteHandler = (id) => {
-    const itemId = tableData.find((el) => el.id === id).item_id
-    const itemWillExist = tableData.find(
-      (el) => el.id !== id && el.item_id === itemId
-    )
-    if (!itemWillExist) {
+    if (lastOfKind(tableData, id)) {
       setIsDeleteModalOpen(true)
       setDeletedInboundId(id)
       return
@@ -106,6 +116,7 @@ const InboundsTable = ({ tableData }) => {
         modalCloseHandler={closeModalForm}
         actionType="edit"
         actionId={formItemId}
+        disableItemEdit={isEditedLastOfKind}
       />
       <DeleteModal
         title={deleteModalTitle()}
