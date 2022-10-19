@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { Table, Space, Divider, Typography, Modal as DeleteModal } from "antd"
-import ModalForm from "../../components/ModalForm"
+import InboundForm from "./InboundForm"
 import { inboundRemoved, lastInboundRemoved } from "./inboundsSlice"
 import { useDispatch } from "react-redux"
 import { WarningOutlined } from "@ant-design/icons"
@@ -38,7 +38,7 @@ const InboundsTable = ({ tableData }) => {
   }
 
   const openModalForm = (id) => {
-    console.log(`passed in id ${id}`)
+    console.log(`opening modal form, passed in id ${id}`)
     setFormItemId(id)
     setIsModalFormOpen(true)
   }
@@ -75,7 +75,7 @@ const InboundsTable = ({ tableData }) => {
   const deleteModalTitle = () => {
     return (
       <Space>
-        <WarningOutlined style={{color: 'red'}} />
+        <WarningOutlined style={{ color: "red" }} />
         <strong>Confirm deleting inbound record #{deletedInboundId}</strong>
       </Space>
     )
@@ -101,11 +101,10 @@ const InboundsTable = ({ tableData }) => {
 
   return (
     <>
-      <ModalForm
+      <InboundForm
         open={isModalFormOpen}
         modalCloseHandler={closeModalForm}
         actionType="edit"
-        actionScope="inbound"
         actionId={formItemId}
       />
       <DeleteModal

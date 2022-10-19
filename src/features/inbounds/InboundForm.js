@@ -9,38 +9,17 @@ import {
   DatePicker,
   Tag
 } from "antd"
-import {
-  selectInbound,
-  inboundAdded,
-  inboundEdited
-} from "../features/inbounds/inboundsSlice"
-import {
-  selectOutbound,
-  outboundAdded,
-  outboundEdited
-} from "../features/outbounds/outboundsSlice"
-import { itemAdded, getAllItems } from "../store/itemsSlice"
+import { selectInbound, inboundAdded, inboundEdited } from "./inboundsSlice"
+import { itemAdded, getAllItems } from "../../store/itemsSlice"
 
 // temporary, uid generation will ultimately occur server-side
 import { nanoid } from "@reduxjs/toolkit"
 
 import moment from "moment"
-import "./ModalForm.css"
+import "../../components/ModalForm.css"
 
-const ModalForm = ({
-  open,
-  modalCloseHandler,
-  actionType,
-  actionScope,
-  actionId
-}) => {
-  const editedItemData = useSelector((state) => {
-    if (actionScope === "inbound") {
-      return selectInbound(state, actionId)
-    } else if (actionScope === "outbound") {
-      return selectOutbound(state, actionId)
-    } else return null
-  })
+const InboundForm = ({ open, modalCloseHandler, actionType, actionId }) => {
+  const editedItemData = useSelector((state) => selectInbound(state, actionId))
   const allItems = useSelector(getAllItems)
 
   const [isNewItem, setIsNewItem] = useState(false)
@@ -77,7 +56,7 @@ const ModalForm = ({
     const fieldNames = ["itemName", "price", "units", "date"]
     const touched = fieldNames.map((e) => form.isFieldTouched(e))
     if (!touched.includes(true)) {
-      console.log('no changes');// ...notify that no data has been changed
+      console.log("no changes") // ...notify that no data has been changed
       modalCloseHandler()
       return
     }
@@ -104,35 +83,15 @@ const ModalForm = ({
             : values.date
         const created_at = new Date().toISOString()
         const { price, units } = values
-        const destination = actionId
 
         if (actionType === "add") {
-          if (actionScope === "inbound") {
-            dispatch(
-              inboundAdded({ id, item_id, date, created_at, price, units })
-            )
-          } else if (actionScope === "outbound") {
-            dispatch(
-              outboundAdded({
-                id,
-                item_id,
-                date,
-                created_at,
-                units,
-                destination
-              })
-            )
-          }
+          dispatch(
+            inboundAdded({ id, item_id, date, created_at, price, units })
+          )
         } else if (actionType === "edit") {
-          if (actionScope === "inbound") {
-            dispatch(
-              inboundEdited({ editedId: actionId, item_id, date, units, price })
-            )
-          } else if (actionScope === "outbound") {
-            dispatch(
-              outboundEdited({ editedId: actionId, item_id, date, units })
-            )
-          }
+          dispatch(
+            inboundEdited({ editedId: actionId, item_id, date, units, price })
+          )
         }
         modalCloseHandler()
       })
@@ -144,8 +103,7 @@ const ModalForm = ({
   }
 
   const formTitle = () => {
-    let title =
-      actionType[0].toUpperCase() + actionType.slice(1) + " " + actionScope
+    let title = actionType[0].toUpperCase() + actionType.slice(1) + " inbound"
     if (actionType === "edit") title += ` #${actionId}`
     return <strong>{title}</strong>
   }
@@ -169,7 +127,7 @@ const ModalForm = ({
     >
       <Form
         form={form}
-        className={`Form-grid Form-grid--${actionScope}`}
+        className={`Form-grid Form-grid--inbound`}
         layout="vertical"
         colon={false}
         requiredMark={false}
@@ -213,23 +171,21 @@ const ModalForm = ({
         >
           <InputNumber min={1} className="Form-input" />
         </Form.Item>
-        {actionScope === "inbound" ? (
-          <Form.Item
-            className="Form-price"
-            label="Price per unit"
-            name="price"
-            rules={[
-              {
-                required: true,
-                message: "Please input price per unit!"
-              }
-            ]}
-          >
-            <InputNumber min={0.01} addonAfter="PLN" className="Form-input" />
-          </Form.Item>
-        ) : (
-          ""
-        )}
+
+        <Form.Item
+          className="Form-price"
+          label="Price per unit"
+          name="price"
+          rules={[
+            {
+              required: true,
+              message: "Please input price per unit!"
+            }
+          ]}
+        >
+          <InputNumber min={0.01} addonAfter="PLN" className="Form-input" />
+        </Form.Item>
+
         <Form.Item
           className="Form-date"
           label="Date"
@@ -248,4 +204,4 @@ const ModalForm = ({
   )
 }
 
-export default ModalForm
+export default InboundForm

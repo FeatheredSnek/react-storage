@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux"
 import { outboundRemoved } from "./outboundsSlice"
 import { Table, Space, Divider, Typography } from "antd"
 
-import ModalForm from "../../components/ModalForm"
+import OutboundForm from "./OutboundForm"
 
 const staticCols = [
   {
@@ -70,11 +70,10 @@ const OutboundsTable = ({ tableData }) => {
 
   return (
     <>
-      <ModalForm
+      <OutboundForm
         open={isModalOpen}
         modalCloseHandler={closeModal}
         actionType="edit"
-        actionScope="outbound"
         actionId={formItemId}
       />
       <Table

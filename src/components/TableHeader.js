@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { PageHeader, Button } from "antd"
-import ModalForm from "./ModalForm"
+import OutboundForm from "../features/outbounds/OutboundForm"
+import InboundForm from "../features/inbounds/InboundForm"
 
 const TableHeader = ({ title, subTitle, actionScope, actionId }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -25,13 +26,21 @@ const TableHeader = ({ title, subTitle, actionScope, actionId }) => {
           </Button>
         }
       />
-      <ModalForm
-        open={isModalOpen}
-        modalCloseHandler={closeModal}
-        actionType="add"
-        actionId={actionId}
-        actionScope={actionScope}
-      />
+      {actionScope === "outbound" ? (
+        <OutboundForm
+          open={isModalOpen}
+          modalCloseHandler={closeModal}
+          actionType="add"
+          actionId={actionId}
+        />
+      ) : (
+        <InboundForm
+          open={isModalOpen}
+          modalCloseHandler={closeModal}
+          actionType="add"
+          actionId={actionId}
+        />
+      )}
     </>
   )
 }
