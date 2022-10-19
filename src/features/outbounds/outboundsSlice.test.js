@@ -48,3 +48,8 @@ test("should select outbound data table given a proper destination id", () => {
   const selectResult = selectOutboundsByDestinationId(mockdata, "d1")
   expect(selectResult).toStrictEqual(result)
 })
+
+test("should return empty array when there are no items for a destination", () => {
+  const selectResult = selectOutboundsByDestinationId(mockdata, "d1337")
+  expect(selectResult).toHaveLength(0)
+})

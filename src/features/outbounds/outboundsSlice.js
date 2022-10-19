@@ -69,7 +69,7 @@ const outboundsSlice = createSlice({
       state.push(action.payload)
     },
     outboundRemoved(state, action) {
-      state.filter((el) => el.id !== action.payload)
+      return state.filter((el) => el.id !== action.payload)
     },
     outboundEdited(state, action) {
       const index = state.findIndex(el => el.id === action.payload.editedId)

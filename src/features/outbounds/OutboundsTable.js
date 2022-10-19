@@ -1,5 +1,8 @@
 import React, { useState } from "react"
+import { useDispatch } from "react-redux"
+import { outboundRemoved } from "./outboundsSlice"
 import { Table, Space, Divider, Typography } from "antd"
+
 import ModalForm from "../../components/ModalForm"
 
 const staticCols = [
@@ -30,6 +33,8 @@ const OutboundsTable = ({ tableData }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [formItemId, setFormItemId] = useState(null)
 
+  const dispatch = useDispatch()
+
   const closeModal = () => {
     setIsModalOpen(false)
   }
@@ -42,6 +47,7 @@ const OutboundsTable = ({ tableData }) => {
 
   const deleteHandler = (id) => {
     console.log(`delete item with id ${id}`)
+    dispatch(outboundRemoved(id))
   }
 
   const columns = [
