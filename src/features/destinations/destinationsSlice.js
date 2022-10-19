@@ -30,7 +30,7 @@ const destinationsSlice = createSlice({
   }
 })
 
+export default destinationsSlice.reducer
+
 export const { destinationAdded, destinationRemoved } =
   destinationsSlice.actions
-
-export default destinationsSlice.reducer

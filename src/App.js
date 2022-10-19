@@ -1,5 +1,5 @@
 import React from "react"
-import { Layout, Button } from "antd"
+import { Layout, Button, Space } from "antd"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import "antd/dist/antd.min.css"
 import "./index.css"
@@ -12,6 +12,7 @@ import OutboundsPage from "./features/outbounds/OutboundsPage"
 import OverviewPage from "./features/overview/OverviewPage"
 import StatusPage from "./features/status/StatusPage"
 import ErrorPage from "./components/ErrorPage"
+import AddDestination from "./features/destinations/AddDestination"
 
 const { Content, Sider } = Layout
 
@@ -33,7 +34,10 @@ const App = () => {
         >
           <div className="Sider-head"></div>
           <Menu />
-          <Button className="Sider-button">Logout</Button>
+          <Space direction="vertical" className="Sider-buttons">
+            <AddDestination/>
+            <Button className="Sider-button">Logout</Button>
+          </Space>
         </Sider>
         <Layout>
           <Content className="Content">

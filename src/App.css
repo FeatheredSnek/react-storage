@@ -17,9 +17,13 @@
   background: #ddd;
 }
 
-.Sider-button {
+.Sider-buttons {
   align-self: end;
   margin: 16px;
+}
+
+.Sider-button {
+  width: 100%;
 }
 
 @media screen and (min-width: 992px) {
