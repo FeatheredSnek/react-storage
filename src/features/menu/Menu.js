@@ -1,5 +1,6 @@
 import React from "react"
 import { useNavigate } from "react-router-dom"
+import { useSelector } from "react-redux"
 import {
   HomeOutlined,
   AppstoreOutlined,
@@ -8,19 +9,15 @@ import {
 } from "@ant-design/icons"
 import { Menu as AntMenu } from "antd"
 
-import mockdata from "../../mockdata"
-
 const Menu = () => {
   const navigate = useNavigate()
 
   const handleClick = (item) => {
     if (item.key === "overview") {
       navigate("/")
-    }
-    else if (item.keyPath.length === 1) {
+    } else if (item.keyPath.length === 1) {
       navigate(`/${item.key}`)
-    }
-    else if (item.keyPath.includes("outbounds")) {
+    } else if (item.keyPath.includes("outbounds")) {
       navigate(`/outbounds/${item.key}`)
     }
   }
@@ -45,26 +42,20 @@ const Menu = () => {
       key: "outbounds",
       icon: <ExportOutlined />,
       label: "Outbounds",
-      children: [
-        // {
-        //   key: "1",
-        //   label: "Skyscraper 7"
-        // },
-        // {
-        //   key: "2",
-        //   label: "St. Jude"
-        // }
-      ]
+      children: []
     }
   ]
 
-  const menuOutboundsItems = mockdata.destinations.map(el => {
+  const destinations = useSelector((state) => state.destinations)
+
+  const menuOutboundsItems = destinations.map((el) => {
     return {
       key: el.id,
       label: el.label
     }
   })
-  items[3].children = menuOutboundsItems
+
+  items.find((el) => el.key === "outbounds").children = menuOutboundsItems
 
   return (
     <AntMenu
