@@ -8,6 +8,10 @@ const initialState = [
   {
     id: "d2",
     label: "Hospital building"
+  },
+  {
+    id: "d3",
+    label: "Small office"
   }
 ]
 
