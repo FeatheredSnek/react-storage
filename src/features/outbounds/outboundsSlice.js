@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit"
 
 import { getItemName, getItemAveragePrice } from "../../store/itemsSlice"
+import { lastInboundRemoved } from "../inbounds/inboundsSlice"
 
 const initialState = [
   {
@@ -75,7 +76,10 @@ const outboundsSlice = createSlice({
       const index = state.findIndex(el => el.id === action.payload.editedId)
       state[index] = {...state[index], ...action.payload}
     }
-  }
+  },
+  extraReducers: builder => builder.addCase(lastInboundRemoved, (state, action) => {
+    return state.filter((el) => el.item_id !== action.payload.itemId)
+  })
 })
 
 export default outboundsSlice.reducer

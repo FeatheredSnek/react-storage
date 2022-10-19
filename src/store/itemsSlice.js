@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
+import { lastInboundRemoved } from "../features/inbounds/inboundsSlice"
 
 const initialState = [
   {
@@ -22,11 +23,13 @@ const itemsSlice = createSlice({
     itemAdded(state, action) {
       state.push(action.payload)
     },
-    // fired when theres no inbounds (?and no outbounds?) for this item
     itemRemoved(state, action) {
-      state.filter((el) => el.id !== action.payload)
+      return state.filter((el) => el.id !== action.payload)
     }
-  }
+  },
+  extraReducers: builder => builder.addCase(lastInboundRemoved, (state, action) => {
+    return state.filter((el) => el.id !== action.payload.itemId)
+  })
 })
 
 export default itemsSlice.reducer

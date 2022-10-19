@@ -65,19 +65,22 @@ const inboundsSlice = createSlice({
     // need to check if any items of this inbound type are left
     // otherwise remove the item too via items/itemRemoved action
     inboundRemoved(state, action) {
-      state.filter((el) => el.id !== action.payload)
+      return state.filter((el) => el.id !== action.payload)
     },
     inboundEdited(state, action) {
       const index = state.findIndex(el => el.id === action.payload.editedId)
       state[index] = {...state[index], ...action.payload}
       // with double spread the second spread's values overwrite duplicate keys
+    },
+    lastInboundRemoved(state, action) {
+      return state.filter((el) => el.id !== action.payload.id)
     }
   }
 })
 
 export default inboundsSlice.reducer
 
-export const { inboundAdded, inboundRemoved, inboundEdited } = inboundsSlice.actions
+export const { inboundAdded, inboundRemoved, inboundEdited, lastInboundRemoved } = inboundsSlice.actions
 
 export const selectAllInbounds = (state) =>
   state.inbounds.map((inbound) => {
