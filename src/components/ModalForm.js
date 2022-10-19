@@ -165,7 +165,7 @@ const ModalForm = ({
       open={open}
       onOk={handleSubmit}
       onCancel={handleCancel}
-      title={formTitle() + " + " + isNewItem}
+      title={formTitle()}
     >
       <Form
         form={form}
