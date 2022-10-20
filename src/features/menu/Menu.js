@@ -1,5 +1,5 @@
 import React from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 import { useSelector } from "react-redux"
 import {
   HomeOutlined,
@@ -57,9 +57,28 @@ const Menu = () => {
 
   items.find((el) => el.key === "outbounds").children = menuOutboundsItems
 
+  const location = useLocation()
+  const highlightRoute = () => {
+    const { pathname } = location
+    switch (pathname) {
+      case "/":
+        console.log("path to home")
+        return ["overview"]
+      case "/status":
+        console.log("path to staus")
+        return ["status"]
+      case "/inbounds":
+        console.log("path to inbounds")
+        return ["inbounds"]
+      default:
+        break
+    }
+  }
+
   return (
     <AntMenu
       mode="inline"
+      selectedKeys={highlightRoute()}
       defaultOpenKeys={["outbounds"]}
       items={items}
       onClick={(item) => handleClick(item)}
