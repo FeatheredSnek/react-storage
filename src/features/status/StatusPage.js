@@ -13,7 +13,7 @@ const StatusPage = () => {
     <>
       <PageHeader
         title="Storage status"
-        subTitle={`${totalValue.toFixed()} PLN`}
+        subTitle={`${totalValue.toFixed(2)} PLN`}
       />
       <StatusTable tableData={tableData} />
     </>
