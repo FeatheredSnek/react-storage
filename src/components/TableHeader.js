@@ -3,6 +3,7 @@ import { PageHeader, Button } from "antd"
 import OutboundForm from "../features/outbounds/OutboundForm"
 import InboundForm from "../features/inbounds/InboundForm"
 import RemoveDestination from "../features/destinations/RemoveDestination"
+import { useNavigate } from "react-router-dom"
 
 const TableHeader = ({ title, subTitle, actionScope, actionId }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -15,10 +16,13 @@ const TableHeader = ({ title, subTitle, actionScope, actionId }) => {
     setIsModalOpen(true)
   }
 
+  const navigate = useNavigate()
+  const navigateHome = () => navigate('/')
+
   return (
     <>
       <PageHeader
-        onBack={() => console.log("back")}
+        onBack={navigateHome}
         title={title}
         subTitle={subTitle}
         extra={
