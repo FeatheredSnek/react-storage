@@ -25,7 +25,7 @@ const destinationsSlice = createSlice({
     // dangerous - prompt before - has to cascaded remove all outbounds directed
     // to this destination id
     destinationRemoved(state, action) {
-      state.filter((el) => el.id !== action.payload)
+      return state.filter((el) => el.id !== action.payload)
     }
   }
 })

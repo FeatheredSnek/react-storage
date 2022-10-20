@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import { PageHeader, Button } from "antd"
 import OutboundForm from "../features/outbounds/OutboundForm"
 import InboundForm from "../features/inbounds/InboundForm"
+import RemoveDestination from "../features/destinations/RemoveDestination"
 
 const TableHeader = ({ title, subTitle, actionScope, actionId }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -21,9 +22,19 @@ const TableHeader = ({ title, subTitle, actionScope, actionId }) => {
         title={title}
         subTitle={subTitle}
         extra={
-          <Button type="primary" onClick={openModal}>
-            Add {actionScope}
-          </Button>
+          <>
+            <Button type="primary" onClick={openModal}>
+              Add {actionScope}
+            </Button>
+            {actionScope === "outbound" ? (
+              <RemoveDestination
+                destinationId={actionId}
+                style={{ "margin-left": "16px" }}
+              />
+            ) : (
+              ""
+            )}
+          </>
         }
       />
       {actionScope === "outbound" ? (

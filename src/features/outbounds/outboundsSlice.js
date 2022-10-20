@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit"
 
 import { getItemName, getItemAveragePrice } from "../../store/itemsSlice"
 import { lastInboundRemoved } from "../inbounds/inboundsSlice"
+import { destinationRemoved } from "../destinations/destinationsSlice"
 
 const initialState = [
   {
@@ -73,18 +74,24 @@ const outboundsSlice = createSlice({
       return state.filter((el) => el.id !== action.payload)
     },
     outboundEdited(state, action) {
-      const index = state.findIndex(el => el.id === action.payload.editedId)
-      state[index] = {...state[index], ...action.payload}
+      const index = state.findIndex((el) => el.id === action.payload.editedId)
+      state[index] = { ...state[index], ...action.payload }
     }
   },
-  extraReducers: builder => builder.addCase(lastInboundRemoved, (state, action) => {
-    return state.filter((el) => el.item_id !== action.payload.itemId)
-  })
+  extraReducers: (builder) =>
+    builder
+      .addCase(lastInboundRemoved, (state, action) => {
+        return state.filter((el) => el.item_id !== action.payload.itemId)
+      })
+      .addCase(destinationRemoved, (state, action) => {
+        return state.filter((el) => el.destination !== action.payload)
+      })
 })
 
 export default outboundsSlice.reducer
 
-export const { outboundAdded, outboundRemoved, outboundEdited } = outboundsSlice.actions
+export const { outboundAdded, outboundRemoved, outboundEdited } =
+  outboundsSlice.actions
 
 export const selectOutboundsByDestinationId = (state, destinationId) => {
   const filtered = state.outbounds.filter(
@@ -92,10 +99,7 @@ export const selectOutboundsByDestinationId = (state, destinationId) => {
   )
   const outbounds = filtered.map((outbound) => {
     const itemName = getItemName(state, outbound.item_id)
-    const itemAveragePrice = getItemAveragePrice(
-      state,
-      outbound.item_id
-    )
+    const itemAveragePrice = getItemAveragePrice(state, outbound.item_id)
     return {
       ...outbound,
       itemName,
@@ -106,7 +110,9 @@ export const selectOutboundsByDestinationId = (state, destinationId) => {
 }
 
 export const selectOutbound = (state, outboundId) => {
-  const outbound = state.outbounds.find((outbound) => outbound.id === outboundId)
+  const outbound = state.outbounds.find(
+    (outbound) => outbound.id === outboundId
+  )
   if (!outbound) return null
   return {
     ...outbound,
