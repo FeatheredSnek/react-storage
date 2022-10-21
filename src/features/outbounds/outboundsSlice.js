@@ -34,7 +34,7 @@ const initialState = [
     created_at: "2022-10-01T12:56:17.000Z",
     item_id: "item1",
     units: 16,
-    date: "2022-11-21",
+    date: "2022-11-19",
     destination: "d2"
   },
   {
@@ -60,6 +60,23 @@ const initialState = [
     units: 48,
     date: "2022-11-22",
     destination: "d1"
+  },
+  {
+    id: "outbound8",
+    created_at: "2022-10-01T12:56:41.000Z",
+    item_id: "item1",
+    units: 15,
+    date: "2022-11-12",
+    destination: "d1"
+  }
+  ,
+  {
+    id: "outbound9",
+    created_at: "2022-10-01T12:56:41.000Z",
+    item_id: "item1",
+    units: 71,
+    date: "2022-11-22",
+    destination: "d3"
   }
 ]
 

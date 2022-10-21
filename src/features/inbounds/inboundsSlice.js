@@ -50,6 +50,14 @@ const initialState = [
     date: "2022-11-20",
     price: 113.6,
     units: 12
+  },
+  {
+    id: "inbound7",
+    created_at: "2022-10-01T14:11:11.000Z",
+    item_id: "item1",
+    date: "2022-11-22",
+    price: 13.6,
+    units: 55
   }
 ]
 
