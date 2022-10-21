@@ -1,7 +1,8 @@
 import React, { useState } from "react"
 import { Table, Space, Divider, Typography, Modal, Button } from "antd"
-import StockChart from "./StockChart"
-import PriceChart from "./PriceChart"
+
+import StatusChart from "./StatusChart"
+import { getStockByItemId, getPriceSeries } from "./statusSelectors"
 
 const staticCols = [
   {
@@ -39,6 +40,7 @@ const staticCols = [
   }
 ]
 
+
 const StatusTable = ({ tableData }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [chartType, setChartType] = useState("")
@@ -64,7 +66,7 @@ const StatusTable = ({ tableData }) => {
       render: (_, record) => (
         <Space split={<Divider type="vertical" />}>
           <Typography.Link
-            onClick={() => openModal("stock", record.key, record.name)}
+            onClick={() => openModal("total", record.key, record.name)}
           >
             Stock
           </Typography.Link>
@@ -87,9 +89,9 @@ const StatusTable = ({ tableData }) => {
         columns={columns}
         pagination={false}
       />
-      {/* TODO modal/chart sizing */}
       <Modal
         open={isModalOpen}
+        onCancel={closeModal}
         title={`${chartItemName} ${chartType} trend`}
         footer={
           <Button key="back" onClick={closeModal}>
@@ -97,11 +99,11 @@ const StatusTable = ({ tableData }) => {
           </Button>
         }
       >
-        {chartType === "stock" ? (
-          <StockChart itemId={chartItemId} />
-        ) : (
-          <PriceChart itemId={chartItemId} />
-        )}
+        <StatusChart
+          type={chartType}
+          selector={chartType === "total" ? getStockByItemId : getPriceSeries}
+          itemId={chartItemId}
+        />
       </Modal>
     </>
   )
