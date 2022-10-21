@@ -1,5 +1,7 @@
-import React from "react"
-import { Table, Space, Divider, Typography } from "antd"
+import React, { useState } from "react"
+import { Table, Space, Divider, Typography, Modal, Button } from "antd"
+import StockChart from "./StockChart"
+import PriceChart from "./PriceChart"
 
 const staticCols = [
   {
@@ -37,23 +39,39 @@ const staticCols = [
   }
 ]
 
-const StatusTable = ({ tableData, editHandler }) => {
-  const openDetails = (id, type) => {
-    console.log(`opened ${type} details modal for item ${id}`)
+const StatusTable = ({ tableData }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [chartType, setChartType] = useState("")
+  const [chartItemId, setChartItemId] = useState(null)
+  const [chartItemName, setChartItemName] = useState("")
+
+  const openModal = (type, itemId, itemName) => {
+    setChartType(type)
+    setChartItemId(itemId)
+    setChartItemName(itemName)
+    setIsModalOpen(true)
+  }
+
+  const closeModal = () => {
+    setIsModalOpen(false)
   }
 
   const columns = [
     ...staticCols,
     {
-      title: "Details",
-      key: "details",
+      title: "Trends",
+      key: "trends",
       render: (_, record) => (
         <Space split={<Divider type="vertical" />}>
-          <Typography.Link onClick={() => openDetails(record.key, "inbound")}>
-            Inbound
+          <Typography.Link
+            onClick={() => openModal("stock", record.key, record.name)}
+          >
+            Stock
           </Typography.Link>
-          <Typography.Link onClick={() => openDetails(record.key, "outbound")}>
-            Outbound
+          <Typography.Link
+            onClick={() => openModal("price", record.key, record.name)}
+          >
+            Price
           </Typography.Link>
         </Space>
       )
@@ -61,13 +79,31 @@ const StatusTable = ({ tableData, editHandler }) => {
   ]
 
   return (
-    <Table
-      dataSource={tableData.map((el) => {
-        return { ...el, key: el.id }
-      })}
-      columns={columns}
-      pagination={false}
-    ></Table>
+    <>
+      <Table
+        dataSource={tableData.map((el) => {
+          return { ...el, key: el.id }
+        })}
+        columns={columns}
+        pagination={false}
+      />
+      {/* TODO modal/chart sizing */}
+      <Modal
+        open={isModalOpen}
+        title={`${chartItemName} ${chartType} trend`}
+        footer={
+          <Button key="back" onClick={closeModal}>
+            Return
+          </Button>
+        }
+      >
+        {chartType === "stock" ? (
+          <StockChart itemId={chartItemId} />
+        ) : (
+          <PriceChart itemId={chartItemId} />
+        )}
+      </Modal>
+    </>
   )
 }
 
