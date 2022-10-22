@@ -1,0 +1,83 @@
+.OverviewPage-wrapper {
+  width: 100%;
+  min-height: 100%;
+  display: grid;
+  grid-template-columns: 100%;
+  grid-template-rows: min-content min-content auto;
+}
+
+.OverviewPage-content {
+  box-sizing: border-box;
+  margin: auto;
+  width: 100%;
+  max-width: 1600px;
+  padding: 24px;
+}
+
+.OverviewPage-content > div {
+  margin-bottom: 24px;
+}
+
+.OverviewPage-footer {
+    width: 100%;
+    text-align: center;
+    align-self: end;
+    margin: 16px;
+
+}
+
+.OverviewPage-row { 
+  display: flex;
+}
+
+.OverviewPage-card {
+  height: 100%;
+  max-height: 380px;
+}
+
+.OverviewPage-total {
+  display: block;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 1.35;
+  margin: 6px 0;
+}
+
+@media screen and (max-width: 1400px) {
+  .OverviewPage-total {
+    font-size: 16px;
+  }
+}
+
+.OverviewPage-graph {
+  margin: auto;
+}
+
+.OverviewPage-graph-container {
+  display: flex;
+  justify-content: center;
+  align-self: center; 
+}
+
+.OverviewPage-outbound {
+  width: 25%;
+  text-align: center;
+  cursor: pointer;
+}
+
+.OverviewPage-outbound p {
+  margin: 0;
+}
+
+.OverviewPage-outbound p:first-child {
+  font-weight: bold;
+}
+
+.OverwievPage-outbounds-list-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.OverwievPage-outbounds-list-header button {
+  max-width: 200px;
+}
