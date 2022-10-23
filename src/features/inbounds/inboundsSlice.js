@@ -107,3 +107,9 @@ export const selectInbound = (state, inboundId) => {
     itemName: getItemName(state, inbound.item_id)
   }
 }
+
+export const getInboundsValue = (state) => {
+  return state.inbounds.reduce((previous, current) => {
+    return previous + current.units * current.price
+  }, 0)
+}

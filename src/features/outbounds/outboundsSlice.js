@@ -68,8 +68,7 @@ const initialState = [
     units: 15,
     date: "2022-11-12",
     destination: "d1"
-  }
-  ,
+  },
   {
     id: "outbound9",
     created_at: "2022-10-01T12:56:41.000Z",
@@ -135,4 +134,21 @@ export const selectOutbound = (state, outboundId) => {
     ...outbound,
     itemName: getItemName(state, outbound.item_id)
   }
+}
+
+export const selectAllOutbounds = (state) => state.outbounds
+
+export const getOutboundValues = (state) => {
+  return state.destinations.map((destination) => {
+    const value = state.outbounds.reduce((previous, current) => {
+      if (current.destination === destination.id) {
+        return previous + getItemAveragePrice(state, current.item_id) * current.units
+      } else {
+        return previous + 0
+      }
+    }, 0)
+    const name = destination.label
+    const id = destination.id
+    return { id, name, value }
+  })
 }

@@ -25,7 +25,8 @@ export const statusSelector = (state) => {
   return output
 }
 
-export const totalValueSelector = (state) => {
+// wrong, thats only inbounds value
+export const getTotalValue = (state) => {
   return state.inbounds.reduce((previous, current) => {
     return previous + current.units * current.price
   }, 0)
@@ -39,7 +40,7 @@ export const getStockByItemId = (state, itemId) => {
     .map((el) => {
       return {
         date: moment(el.date).valueOf(),
-        units: el.price ? el.units : el.units * -1 
+        units: el.price ? el.units : el.units * -1
         // if theres price its an inbound, if not its an outbound - so subtract
       }
     })
@@ -77,4 +78,22 @@ export const getPriceSeries = (state, itemId) => {
     .sort((a, b) => a.date - b.date)
 
   return records
+}
+
+export const getCurrentStocks = (state) => {
+  let records = state.inbounds.concat(state.outbounds)
+  return state.items.map((item) => {
+    const stock = records.reduce((previous, current) => {
+      if (current.item_id === item.id) {
+        if (current.price) return previous + current.units
+        if (current.destination) return previous - current.units
+      }
+      return previous + 0
+    }, 0)
+    return {
+      name: item.name,
+      id: item.id,
+      stock
+    }
+  })
 }

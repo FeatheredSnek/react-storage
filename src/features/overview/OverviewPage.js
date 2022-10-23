@@ -5,108 +5,112 @@ import { Link } from "react-router-dom"
 import { useNavigate } from "react-router-dom"
 import { QuestionCircleOutlined } from "@ant-design/icons"
 import AddDestination from "../destinations/AddDestination"
+import { getInboundsValue } from "../inbounds/inboundsSlice"
 import "./OverviewPage.css"
+import { useSelector } from "react-redux"
+import { getOutboundValues } from "../outbounds/outboundsSlice"
+import { getCurrentStocks } from "../status/statusSelectors"
 
 const { Text, Title } = Typography
 
-const chart = {
-  options: {
-    noData: {text: "No items in storage", offsetY: -60},
-    responsive: [
-      {
-        breakpoint: 1450,
-        options: {
-          chart: {
-            width: 350
-          },
-          legend: {
-            position: "right"
-          }
-        }
-      },
-      {
-        breakpoint: 1280,
-        options: {
-          chart: {
-            width: 250
-          },
-          legend: {
-            position: "bottom"
-          }
+const barchartOptions = {
+  chart: {
+    toolbar: {
+      show: false
+    },
+    zoom: {
+      enabled: false
+    }
+  },
+  plotOptions: {
+    bar: {
+      distributed: true
+    }
+  },
+  noData: { text: "No outbound data" },
+  responsive: [
+    {
+      breakpoint: 1450,
+      options: {
+        chart: {
+          width: 350
         }
       }
-    ]
-  },
-  series: [44, 55, 41, 17, 15],
-  labels: ["A", "B", "C", "D", "E"]
+    },
+    {
+      breakpoint: 1350,
+      options: {
+        chart: {
+          width: 300
+        }
+      }
+    },
+    {
+      breakpoint: 1250,
+      options: {
+        chart: {
+          width: 250
+        }
+      }
+    }
+  ]
 }
 
-const bars = {
-  options: {
-    chart: {
-      toolbar: {
-        show: false
-      },
-      zoom: {
-        enabled: false
-      }
-    },
-    plotOptions: {
-      bar: {
-        distributed: true
-      }
-    },
-    noData: {text: "No outbound data"},
-    responsive: [
-      {
-        breakpoint: 1450,
-        options: {
-          chart: {
-            width: 350
-          }
-        }
-      },
-      {
-        breakpoint: 1350,
-        options: {
-          chart: {
-            width: 300
-          }
-        }
-      },
-      {
-        breakpoint: 1250,
-        options: {
-          chart: {
-            width: 250
-          }
-        }
-      }
-    ]
-  },
-  series: [
+const piechartStaticOptions = {
+  noData: { text: "No items in storage", offsetY: -60 },
+  responsive: [
     {
-      data: [
-        {
-          x: "category A",
-          y: 2345
+      breakpoint: 1450,
+      options: {
+        chart: {
+          width: 350
         },
-        {
-          x: "category B",
-          y: 457
-        },
-        {
-          x: "category C",
-          y: 1361
+        legend: {
+          position: "right"
         }
-      ]
+      }
+    },
+    {
+      breakpoint: 1280,
+      options: {
+        chart: {
+          width: 250
+        },
+        legend: {
+          position: "bottom"
+        }
+      }
     }
   ]
 }
 
 const OverviewPage = () => {
+  const currentStocks = useSelector(getCurrentStocks)
+  const outboundValues = useSelector(getOutboundValues)
+  const inboundsTotalValue = useSelector(getInboundsValue)
+  const outboundsTotalValue = outboundValues.reduce((p, c) => {
+    return p + c.value
+  }, 0)
+  const currentTotalValue = inboundsTotalValue - outboundsTotalValue
+
+  const barchartSeries = [
+    {
+      data: outboundValues.map((el) => {
+        return {
+          x: el.name,
+          y: el.value.toFixed(2)
+        }
+      })
+    }
+  ]
+
+  const piechartSeries = currentStocks.map((el) => el.stock)
+  const piechartLabels = currentStocks.map((el) => el.name)
+  const piechartOptions = { ...piechartStaticOptions, labels: piechartLabels }
+
   const navigate = useNavigate()
-  const navigateToOutbound = () => navigate('status')
+  const navigateToOutbound = (id) => navigate(`/outbounds/${id}`)
+
   return (
     <div className="OverviewPage-wrapper">
       <PageHeader
@@ -123,44 +127,43 @@ const OverviewPage = () => {
         ]}
       />
 
-      <div className="OverviewPage-content" >
+      <div className="OverviewPage-content">
         <Row gutter={24} className="OverviewPage-row">
           <Col span={6} flex={1} className="OverviewPage-column">
             <Card title="Totals" className="OverviewPage-card" bordered={false}>
               <Space direction="vertical" size="large">
                 <div>
-                  <Text type="secondary">Total value</Text>
+                  <Text type="secondary">Inbounds total value</Text>
                   <Text className="OverviewPage-total">
-                    12 356.78 PLN
-                  </Text >
+                    {`${inboundsTotalValue.toFixed(2)} PLN`}
+                  </Text>
                 </div>
                 <div>
-                  <Text type="secondary">Inbounds value</Text>
+                  <Text type="secondary">Outbounds estimated value</Text>
                   <Text className="OverviewPage-total">
-                    23 456.99 PLN
-                  </Text >
+                    {`${outboundsTotalValue.toFixed(2)} PLN`}
+                  </Text>
                 </div>
                 <div>
-                  <Text type="secondary">Outbounds value</Text>
+                  <Text type="secondary">Stock estimated value</Text>
                   <Text className="OverviewPage-total">
-                    14 567.83 PLN
-                  </Text >
+                    {`${currentTotalValue.toFixed(2)} PLN`}
+                  </Text>
                 </div>
               </Space>
             </Card>
           </Col>
           <Col span={9} flex={1} className="OverviewPage-column">
             <Card
-              title="Current storage"
+              title="Current stocks"
               className="OverviewPage-card"
               bordered={false}
             >
               <div className="OverviewPage-graph-container">
                 <ApexChart
                   type="donut"
-                  series={chart.series}
-                  options={chart.options}
-                  labels={chart.labels}
+                  options={piechartOptions}
+                  series={piechartSeries}
                   width="400"
                   className="OverviewPage-graph"
                 />
@@ -176,8 +179,8 @@ const OverviewPage = () => {
               <div className="OverviewPage-graph-container">
                 <ApexChart
                   type="bar"
-                  series={bars.series}
-                  options={bars.options}
+                  series={barchartSeries}
+                  options={barchartOptions}
                   width="400"
                   className="OverviewPage-graph"
                 />
@@ -187,27 +190,28 @@ const OverviewPage = () => {
         </Row>
         <Row>
           <Col span={24}>
-            <Card title={<div className="OverwievPage-outbounds-list-header"><span>Outbound destinations</span><AddDestination/></div>}>
-              <Card.Grid className="OverviewPage-outbound" onClick={() => navigateToOutbound()}>
-                <Title level={5}>Skyscraper</Title>
-                <p><Text type="secondary">12 345.67 PLN</Text></p>
-              </Card.Grid>
-              <Card.Grid className="OverviewPage-outbound" onClick={() => navigateToOutbound()}>
-                <Title level={5}>Hospital building</Title>
-                <p><Text type="secondary">12 345.67 PLN</Text></p>
-              </Card.Grid>
-              <Card.Grid className="OverviewPage-outbound" onClick={() => navigateToOutbound()}>
-                <Title level={5}>Office</Title>
-                <p><Text type="secondary">12 345.67 PLN</Text></p>
-              </Card.Grid>
-              <Card.Grid className="OverviewPage-outbound" onClick={() => navigateToOutbound()}>
-                <Title level={5}>Apartment building 3</Title>
-                <p><Text type="secondary">12 345.67 PLN</Text></p>
-              </Card.Grid>
-              <Card.Grid className="OverviewPage-outbound" onClick={() => navigateToOutbound()}>
-                <Title level={5}>Warehouse</Title>
-                <p><Text type="secondary">12 345.67 PLN</Text></p>
-              </Card.Grid>
+            <Card
+              title={
+                <div className="OverwievPage-outbounds-list-header">
+                  <span>Outbound destinations</span>
+                  <AddDestination />
+                </div>
+              }
+            >
+              {outboundValues.map((outbound) => {
+                return (
+                  <Card.Grid
+                    key={outbound.id}
+                    onClick={() => navigateToOutbound(outbound.id)}
+                    className="OverviewPage-outbound"
+                  >
+                    <Title level={5}>{outbound.name}</Title>
+                    <p>
+                      <Text type="secondary">{outbound.value.toFixed(2)}</Text>
+                    </p>
+                  </Card.Grid>
+                )
+              })}
             </Card>
           </Col>
         </Row>
