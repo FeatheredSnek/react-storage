@@ -27,6 +27,11 @@ const barchartOptions = {
       distributed: true
     }
   },
+  dataLabels: {
+    formatter: function(val, _) {
+      return val.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' })
+    }
+  },
   noData: { text: "No outbound data" },
   responsive: [
     {
@@ -136,19 +141,19 @@ const OverviewPage = () => {
                 <div>
                   <Text type="secondary">Inbounds total value</Text>
                   <Text className="OverviewPage-total">
-                    {`${inboundsTotalValue.toFixed(2)} PLN`}
+                    {inboundsTotalValue.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' })}
                   </Text>
                 </div>
                 <div>
                   <Text type="secondary">Outbounds estimated value</Text>
                   <Text className="OverviewPage-total">
-                    {`${outboundsTotalValue.toFixed(2)} PLN`}
+                    {outboundsTotalValue.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' })}
                   </Text>
                 </div>
                 <div>
                   <Text type="secondary">Stock estimated value</Text>
                   <Text className="OverviewPage-total">
-                    {`${currentTotalValue.toFixed(2)} PLN`}
+                    {currentTotalValue.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' })}
                   </Text>
                 </div>
               </Space>
@@ -208,7 +213,7 @@ const OverviewPage = () => {
                   >
                     <Title level={5}>{outbound.name}</Title>
                     <p>
-                      <Text type="secondary">{outbound.value.toFixed(2)}</Text>
+                      <Text type="secondary">{outbound.value.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' })}</Text>
                     </p>
                   </Card.Grid>
                 )
