@@ -95,6 +95,7 @@ const OverviewPage = () => {
 
   const barchartSeries = [
     {
+      name: "Estimated outbound value",
       data: outboundValues.map((el) => {
         return {
           x: el.name,
