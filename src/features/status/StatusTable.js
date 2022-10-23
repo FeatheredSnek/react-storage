@@ -14,7 +14,10 @@ const staticCols = [
     title: "Avg. price per unit",
     dataIndex: "price",
     key: "price",
-    render: (data) => data.toFixed(2)
+    render: (data) => data.toLocaleString("pl-PL", {
+      style: "currency",
+      currency: "PLN"
+    })
   },
   {
     title: "Inbound total",

@@ -11,13 +11,15 @@ const InboundsPage = () => {
     .reduce((previous, current) => {
       return previous + current.price * current.units
     }, 0)
-    .toFixed(2)
 
   return (
     <>
       <TableHeader
         title="Inbounds"
-        subTitle={`${totalValue} PLN`}
+        subTitle={`Total value: ${totalValue.toLocaleString("pl-PL", {
+          style: "currency",
+          currency: "PLN"
+        })}`}
         actionScope="inbound"
         actionId={null}
       />

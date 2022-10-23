@@ -19,7 +19,6 @@ const OutboundsPage = () => {
     .reduce((previous, current) => {
       return previous + parseFloat(current.itemAveragePrice) * current.units
     }, 0)
-    .toFixed(2)
 
   if (destinationData === undefined) {
     return <ErrorPage type="404" />
@@ -31,7 +30,10 @@ const OutboundsPage = () => {
     <>
       <TableHeader
         title={`${destinationName} outbounds`}
-        subTitle={`${totalCost} PLN`}
+        subTitle={`Estimated value: ${totalCost.toLocaleString("pl-PL", {
+          style: "currency",
+          currency: "PLN"
+        })}`}
         actionScope="outbound"
         actionId={destinationId}
       />
