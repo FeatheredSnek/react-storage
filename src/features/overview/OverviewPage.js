@@ -1,5 +1,14 @@
 import React from "react"
-import { Card, Col, Row, Typography, Space, PageHeader, Button } from "antd"
+import {
+  Card,
+  Col,
+  Row,
+  Typography,
+  Space,
+  PageHeader,
+  Button,
+  Empty
+} from "antd"
 import ApexChart from "react-apexcharts"
 import { Link } from "react-router-dom"
 import { useNavigate } from "react-router-dom"
@@ -28,8 +37,8 @@ const barchartOptions = {
     }
   },
   dataLabels: {
-    formatter: function(val, _) {
-      return val.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' })
+    formatter: function (val, _) {
+      return val.toLocaleString("pl-PL", { style: "currency", currency: "PLN" })
     }
   },
   noData: { text: "No outbound data" },
@@ -141,19 +150,28 @@ const OverviewPage = () => {
                 <div>
                   <Text type="secondary">Inbounds total value</Text>
                   <Text className="OverviewPage-total">
-                    {inboundsTotalValue.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' })}
+                    {inboundsTotalValue.toLocaleString("pl-PL", {
+                      style: "currency",
+                      currency: "PLN"
+                    })}
                   </Text>
                 </div>
                 <div>
                   <Text type="secondary">Outbounds estimated value</Text>
                   <Text className="OverviewPage-total">
-                    {outboundsTotalValue.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' })}
+                    {outboundsTotalValue.toLocaleString("pl-PL", {
+                      style: "currency",
+                      currency: "PLN"
+                    })}
                   </Text>
                 </div>
                 <div>
                   <Text type="secondary">Stock estimated value</Text>
                   <Text className="OverviewPage-total">
-                    {currentTotalValue.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' })}
+                    {currentTotalValue.toLocaleString("pl-PL", {
+                      style: "currency",
+                      currency: "PLN"
+                    })}
                   </Text>
                 </div>
               </Space>
@@ -204,20 +222,29 @@ const OverviewPage = () => {
                 </div>
               }
             >
-              {outboundValues.map((outbound) => {
-                return (
-                  <Card.Grid
-                    key={outbound.id}
-                    onClick={() => navigateToOutbound(outbound.id)}
-                    className="OverviewPage-outbound"
-                  >
-                    <Title level={5}>{outbound.name}</Title>
-                    <p>
-                      <Text type="secondary">{outbound.value.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' })}</Text>
-                    </p>
-                  </Card.Grid>
-                )
-              })}
+              {outboundValues.length === 0 ? (
+                <Empty />
+              ) : (
+                outboundValues.map((outbound) => {
+                  return (
+                    <Card.Grid
+                      key={outbound.id}
+                      onClick={() => navigateToOutbound(outbound.id)}
+                      className="OverviewPage-outbound"
+                    >
+                      <Title level={5}>{outbound.name}</Title>
+                      <p>
+                        <Text type="secondary">
+                          {outbound.value.toLocaleString("pl-PL", {
+                            style: "currency",
+                            currency: "PLN"
+                          })}
+                        </Text>
+                      </p>
+                    </Card.Grid>
+                  )
+                })
+              )}
             </Card>
           </Col>
         </Row>
