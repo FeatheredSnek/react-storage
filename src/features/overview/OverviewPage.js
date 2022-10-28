@@ -20,6 +20,10 @@ import { useSelector } from "react-redux"
 import { getOutboundValues } from "../outbounds/outboundsSlice"
 import { getCurrentStocks } from "../status/statusSelectors"
 
+// temporary
+import { loadingStarted } from "../../store/loaderSlice"
+import { useDispatch } from "react-redux"
+
 const { Text, Title } = Typography
 
 const barchartOptions = {
@@ -99,6 +103,14 @@ const piechartStaticOptions = {
 }
 
 const OverviewPage = () => {
+
+  // temporary
+  const dispatch = useDispatch()
+  const loaderStatus = useSelector(state => state.loader.status)
+  const handleTest = () => {
+    dispatch(loadingStarted())
+  }
+
   const currentStocks = useSelector(getCurrentStocks)
   const outboundValues = useSelector(getOutboundValues)
   const inboundsTotalValue = useSelector(getInboundsValue)
@@ -130,7 +142,8 @@ const OverviewPage = () => {
     <div className="OverviewPage-wrapper">
       <PageHeader
         ghost={false}
-        title="Dashboard"
+        // temporary
+        title={`Dashboard -- status: ${loaderStatus}`}
         extra={[
           <Link to="/status" key="3">
             <Button>Stock status</Button>
@@ -138,7 +151,9 @@ const OverviewPage = () => {
           <Link to="/inbounds" key="2">
             <Button>Inbounds</Button>
           </Link>,
-          <Button icon={<QuestionCircleOutlined />} key="1" type="primary" />
+          <Button icon={<QuestionCircleOutlined />} key="1" type="primary" />,
+          // temporary
+          <Button key="69" onClick={handleTest}>Load data</Button>
         ]}
       />
 
