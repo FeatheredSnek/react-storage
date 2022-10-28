@@ -3,62 +3,62 @@ import { createSlice } from "@reduxjs/toolkit"
 import { getItemName } from "../../store/itemsSlice"
 
 const initialState = [
-  {
-    id: "inbound1",
-    created_at: "2022-10-01T12:50:45.000Z",
-    item_id: "item1",
-    date: "2022-11-09",
-    price: 18.0,
-    units: 48
-  },
-  {
-    id: "inbound2",
-    created_at: "2022-10-01T12:51:29.000Z",
-    item_id: "item2",
-    date: "2022-11-09",
-    price: 6.99,
-    units: 48
-  },
-  {
-    id: "inbound3",
-    created_at: "2022-10-01T12:52:13.000Z",
-    item_id: "item1",
-    date: "2022-11-12",
-    price: 19.5,
-    units: 144
-  },
-  {
-    id: "inbound4",
-    created_at: "2022-10-01T12:52:32.000Z",
-    item_id: "item1",
-    date: "2022-11-13",
-    price: 19.5,
-    units: 48
-  },
-  {
-    id: "inbound5",
-    created_at: "2022-10-01T12:52:46.000Z",
-    item_id: "item2",
-    date: "2022-11-13",
-    price: 6.99,
-    units: 96
-  },
-  {
-    id: "inbound6",
-    created_at: "2022-10-01T14:11:11.000Z",
-    item_id: "item3",
-    date: "2022-11-20",
-    price: 113.6,
-    units: 12
-  },
-  {
-    id: "inbound7",
-    created_at: "2022-10-01T14:11:11.000Z",
-    item_id: "item1",
-    date: "2022-11-22",
-    price: 13.6,
-    units: 55
-  }
+  // {
+  //   id: "inbound1",
+  //   created_at: "2022-10-01T12:50:45.000Z",
+  //   item_id: "item1",
+  //   date: "2022-11-09",
+  //   price: 18.0,
+  //   units: 48
+  // },
+  // {
+  //   id: "inbound2",
+  //   created_at: "2022-10-01T12:51:29.000Z",
+  //   item_id: "item2",
+  //   date: "2022-11-09",
+  //   price: 6.99,
+  //   units: 48
+  // },
+  // {
+  //   id: "inbound3",
+  //   created_at: "2022-10-01T12:52:13.000Z",
+  //   item_id: "item1",
+  //   date: "2022-11-12",
+  //   price: 19.5,
+  //   units: 144
+  // },
+  // {
+  //   id: "inbound4",
+  //   created_at: "2022-10-01T12:52:32.000Z",
+  //   item_id: "item1",
+  //   date: "2022-11-13",
+  //   price: 19.5,
+  //   units: 48
+  // },
+  // {
+  //   id: "inbound5",
+  //   created_at: "2022-10-01T12:52:46.000Z",
+  //   item_id: "item2",
+  //   date: "2022-11-13",
+  //   price: 6.99,
+  //   units: 96
+  // },
+  // {
+  //   id: "inbound6",
+  //   created_at: "2022-10-01T14:11:11.000Z",
+  //   item_id: "item3",
+  //   date: "2022-11-20",
+  //   price: 113.6,
+  //   units: 12
+  // },
+  // {
+  //   id: "inbound7",
+  //   created_at: "2022-10-01T14:11:11.000Z",
+  //   item_id: "item1",
+  //   date: "2022-11-22",
+  //   price: 13.6,
+  //   units: 55
+  // }
 ]
 
 const inboundsSlice = createSlice({
@@ -76,19 +76,28 @@ const inboundsSlice = createSlice({
       return state.filter((el) => el.id !== action.payload)
     },
     inboundEdited(state, action) {
-      const index = state.findIndex(el => el.id === action.payload.editedId)
-      state[index] = {...state[index], ...action.payload}
+      const index = state.findIndex((el) => el.id === action.payload.editedId)
+      state[index] = { ...state[index], ...action.payload }
       // with double spread the second spread's values overwrite duplicate keys
     },
     lastInboundRemoved(state, action) {
       return state.filter((el) => el.id !== action.payload.id)
+    },
+    inboundsLoaded(state, action) {
+      return state.concat(action.payload)
     }
   }
 })
 
 export default inboundsSlice.reducer
 
-export const { inboundAdded, inboundRemoved, inboundEdited, lastInboundRemoved } = inboundsSlice.actions
+export const {
+  inboundAdded,
+  inboundRemoved,
+  inboundEdited,
+  lastInboundRemoved,
+  inboundsLoaded
+} = inboundsSlice.actions
 
 export const selectAllInbounds = (state) =>
   state.inbounds.map((inbound) => {
