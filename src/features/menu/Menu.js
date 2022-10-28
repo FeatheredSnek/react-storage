@@ -51,7 +51,7 @@ const Menu = () => {
   const menuOutboundsItems = destinations.map((el) => {
     return {
       key: el.id,
-      label: el.label
+      label: el.name
     }
   })
 

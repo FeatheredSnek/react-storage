@@ -18,9 +18,9 @@ const AddDestinationForm = ({ open, modalCloseHandler }) => {
     destinationForm
       .validateFields()
       .then((values) => {
-        const label = values.name
+        const name = values.name
         const id = nanoid()
-        dispatch(destinationAdded({id, label}))
+        dispatch(destinationAdded({id, name}))
         notifications.success("Destination created")
         navigate(`/outbounds/${id}`)
         modalCloseHandler()

@@ -24,7 +24,7 @@ const OutboundsPage = () => {
     return <ErrorPage type="404" />
   }
 
-  const destinationName = destinationData.label
+  const destinationName = destinationData.name
 
   return (
     <>
