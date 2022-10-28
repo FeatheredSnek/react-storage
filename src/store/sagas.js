@@ -1,4 +1,4 @@
-import { takeEvery, put, call, all } from "redux-saga/effects";
+import { takeEvery, put, call, all, race } from "redux-saga/effects";
 import api from "../api";
 
 import { itemsLoaded } from "./itemsSlice";
@@ -7,9 +7,16 @@ import { inboundsLoaded } from "../features/inbounds/inboundsSlice";
 import { outboundsLoaded } from "../features/outbounds/outboundsSlice";
 import { loadingSuccess, loadingError } from "./loaderSlice";
 
+
 function* fetchDataWorker() {
   try {
-    const data = yield call(api.get, process.env.REACT_APP_API_GET_ALL)
+    const { data, timeout } = yield race({
+      data: call(api.get, process.env.REACT_APP_API_GET_ALL),
+      timeout: call(api.wait)
+    }) 
+    
+    if (timeout) throw new Error(timeout)
+
     // according to saga github prs all batches actions 
     // so in principle the order of puts should not matter
     yield all([
@@ -25,6 +32,7 @@ function* fetchDataWorker() {
     yield put(loadingError())
   }
 }
+
 
 function* loaderSaga() {
   yield takeEvery('loader/loadingStarted', fetchDataWorker)
