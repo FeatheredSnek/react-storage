@@ -59,7 +59,11 @@ const barchartOptions = {
       breakpoint: 1350,
       options: {
         chart: {
-          width: 300
+          width: 300,
+          height: 200
+        },
+        legend: {
+          show: false,
         }
       }
     },
@@ -67,7 +71,11 @@ const barchartOptions = {
       breakpoint: 1250,
       options: {
         chart: {
-          width: 250
+          width: 250,
+          height: 220
+        },
+        legend: {
+          show: false,
         }
       }
     }
