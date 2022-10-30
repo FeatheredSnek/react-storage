@@ -1,9 +1,8 @@
 import React, { useState } from "react"
 import { Dropdown, Menu, Button, Modal, Space } from "antd"
 import { WarningOutlined, EllipsisOutlined } from "@ant-design/icons"
-import { useNavigate } from "react-router-dom"
-import { useDispatch } from "react-redux"
-import { destinationRemoved } from "./destinationsSlice"
+import { useDispatch, useSelector } from "react-redux"
+import { destinationRemoveRequested } from "./destinationsSlice"
 
 const RemoveDestination = ({ destinationId }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -11,14 +10,12 @@ const RemoveDestination = ({ destinationId }) => {
   const openModal = () => setIsModalOpen(true)
   const closeModal = () => setIsModalOpen(false)
 
-  const navigate = useNavigate()
   const dispatch = useDispatch()
 
+  const loaderStatus = useSelector((state) => state.destinations.status)
+
   const confirmCascadeDelete = () => {
-    console.log(`deleting destination id ${destinationId}`)
-    dispatch(destinationRemoved(destinationId))
-    closeModal()
-    navigate('/')
+    dispatch(destinationRemoveRequested({id: destinationId}))
   }
 
   const menu = (
@@ -26,7 +23,7 @@ const RemoveDestination = ({ destinationId }) => {
       items={[
         {
           key: "1",
-          label: <span onClick={openModal}>Remove destination</span>
+          label: <span onClick={openModal}>Remove destination-{loaderStatus}</span>
         }
       ]}
     />
@@ -46,8 +43,12 @@ const RemoveDestination = ({ destinationId }) => {
       <Modal
         title={deleteModalTitle()}
         open={isModalOpen}
-        onOk={confirmCascadeDelete}
         onCancel={closeModal}
+        footer={
+          <Button loading={loaderStatus === 'loading'} onClick={confirmCascadeDelete}>
+            Confirm
+          </Button>
+        }
       >
         <p>
           Removing this destination will result in deleting all associated

@@ -7,7 +7,7 @@ import destinationsReducer from "../features/destinations/destinationsSlice"
 import itemsReducer from "./itemsSlice"
 import loaderReducer from "./loaderSlice"
 
-import loaderSaga from "./sagas"
+import rootSaga from "./sagas"
 
 const saga = createSagaMiddleware();
 
@@ -21,6 +21,6 @@ const store = configureStore({
   },
   middleware: [saga]
 })
-saga.run(loaderSaga)
+saga.run(rootSaga)
 
 export default store

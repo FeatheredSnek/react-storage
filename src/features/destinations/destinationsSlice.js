@@ -1,39 +1,49 @@
 import { createSlice } from "@reduxjs/toolkit"
 
-const initialState = [
-  // {
-  //   id: "d1",
-  //   name: "Skyscraper"
-  // },
-  // {
-  //   id: "d2",
-  //   name: "Hospital building"
-  // },
-  // {
-  //   id: "d3",
-  //   name: "Small office"
-  // }
-]
-
 const destinationsSlice = createSlice({
   name: "destinations",
-  initialState,
+  initialState: {
+    data: [],
+    status: "idle" // idle | loading | success | error
+  },
   reducers: {
     destinationAdded(state, action) {
-      state.push(action.payload)
+      state.data.push(action.payload)
+      state.status = "success"
     },
-    // dangerous - prompt before - has to cascaded remove all outbounds directed
-    // to this destination id
     destinationRemoved(state, action) {
-      return state.filter((el) => el.id !== action.payload)
+      state.data = state.data.filter((el) => el.id !== action.payload.id)
+      state.status = "success"
     },
     destinationsLoaded(state, action) {
-      return state.concat(action.payload)
+      return {
+        ...state,
+        data: action.payload
+      }
+    },
+    destinationAddRequested(state, action) {
+      state.status = "loading"
+    },
+    destinationRemoveRequested(state, action) {
+      state.status = "loading"
+    },
+    destinationStatusError(state) {
+      state.status = "error"
+    },
+    destinationStatusReset(state) {
+      state.status = "idle"
     }
   }
 })
 
 export default destinationsSlice.reducer
 
-export const { destinationAdded, destinationRemoved, destinationsLoaded } =
-  destinationsSlice.actions
+export const {
+  destinationAdded,
+  destinationRemoved,
+  destinationsLoaded,
+  destinationAddRequested,
+  destinationRemoveRequested,
+  destinationStatusError,
+  destinationStatusReset
+} = destinationsSlice.actions

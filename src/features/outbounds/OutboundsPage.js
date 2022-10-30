@@ -10,7 +10,7 @@ import OutboundsTable from "./OutboundsTable"
 const OutboundsPage = () => {
   const { destinationId } = useParams()
   const destinationData = useSelector((state) =>
-    state.destinations.find((el) => el.id === destinationId)
+    state.destinations.data.find((el) => el.id === destinationId)
   )
   const tableData = useSelector((state) =>
     selectOutboundsByDestinationId(state, destinationId)

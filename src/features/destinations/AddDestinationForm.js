@@ -1,29 +1,20 @@
 import React from "react"
-import { useDispatch } from "react-redux"
-import { Modal, Form, Input } from "antd"
-import { destinationAdded } from "./destinationsSlice"
+import { useDispatch, useSelector } from "react-redux"
+import { Modal, Form, Input, Button } from "antd"
+import { destinationAddRequested } from "./destinationsSlice"
 
-// uid will be done server side
-import { nanoid } from "@reduxjs/toolkit"
-
-import notifications from "../../components/notifications"
-import { useNavigate } from "react-router-dom"
 
 const AddDestinationForm = ({ open, modalCloseHandler }) => {
   const [destinationForm] = Form.useForm()
   const dispatch = useDispatch()
-  const navigate = useNavigate()
+
+  const loaderStatus = useSelector((state) => state.destinations.status)
 
   const handleSubmit = () => {
     destinationForm
       .validateFields()
       .then((values) => {
-        const name = values.name
-        const id = nanoid()
-        dispatch(destinationAdded({id, name}))
-        notifications.success("Destination created")
-        navigate(`/outbounds/${id}`)
-        modalCloseHandler()
+        dispatch(destinationAddRequested({ name: values.name }))
       })
       .catch((err) => console.warn(err))
   }
@@ -39,6 +30,19 @@ const AddDestinationForm = ({ open, modalCloseHandler }) => {
       onCancel={handleCancel}
       title="Add destination"
       destroyOnClose
+      footer={[
+        <Button key="back" onClick={handleCancel}>
+          Cancel
+        </Button>,
+        <Button
+          key="submit"
+          type="primary"
+          loading={loaderStatus === "loading"}
+          onClick={handleSubmit}
+        >
+          Add destination
+        </Button>
+      ]}
     >
       <Form
         form={destinationForm}

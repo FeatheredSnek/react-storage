@@ -1,4 +1,5 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
+import { useSelector } from "react-redux"
 import { Button } from "antd"
 import AddDestinationForm from "./AddDestinationForm"
 
@@ -10,6 +11,18 @@ const AddDestination = () => {
   const closeModal = () => {
     setIsModalOpen(false)
   }
+
+  const loaderStatus = useSelector((state) => state.destinations.status)
+
+  useEffect(() => {
+    console.log('add destination effect');
+    if (loaderStatus === "success") {
+      closeModal()
+    } else if (loaderStatus === "error") {
+      closeModal()
+    }
+  }, [loaderStatus])
+
   return (
     <>
       <AddDestinationForm open={isModalOpen} modalCloseHandler={closeModal} />

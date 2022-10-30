@@ -146,7 +146,7 @@ export const selectOutbound = (state, outboundId) => {
 export const selectAllOutbounds = (state) => state.outbounds
 
 export const getOutboundValues = (state) => {
-  return state.destinations.map((destination) => {
+  return state.destinations.data.map((destination) => {
     const value = state.outbounds.reduce((previous, current) => {
       if (current.destination === destination.id) {
         return (

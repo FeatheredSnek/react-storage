@@ -46,7 +46,7 @@ const Menu = () => {
     }
   ]
 
-  const destinations = useSelector((state) => state.destinations)
+  const destinations = useSelector((state) => state.destinations.data)
 
   const menuOutboundsItems = destinations.map((el) => {
     return {

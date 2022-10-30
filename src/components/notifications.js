@@ -7,6 +7,10 @@ const notifications = {
 
   success: (text = "Operation successful") => {
     message.success(text)
+  },
+
+  error: (text = "Operation error") => {
+    message.error(text)
   }
 }
 
