@@ -4,97 +4,46 @@ import { getItemName, getItemAveragePrice } from "../../store/itemsSlice"
 import { lastInboundRemoved } from "../inbounds/inboundsSlice"
 import { destinationRemoved } from "../destinations/destinationsSlice"
 
-const initialState = [
-  // {
-  //   id: "outbound1",
-  //   created_at: "2022-10-01T12:55:31.000Z",
-  //   item_id: "item1",
-  //   units: 24,
-  //   date: "2022-11-14",
-  //   destination: "d1"
-  // },
-  // {
-  //   id: "outbound2",
-  //   created_at: "2022-10-01T12:55:44.000Z",
-  //   item_id: "item2",
-  //   units: 24,
-  //   date: "2022-11-14",
-  //   destination: "d1"
-  // },
-  // {
-  //   id: "outbound3",
-  //   created_at: "2022-10-01T12:56:06.000Z",
-  //   item_id: "item2",
-  //   units: 48,
-  //   date: "2022-11-18",
-  //   destination: "d2"
-  // },
-  // {
-  //   id: "outbound4",
-  //   created_at: "2022-10-01T12:56:17.000Z",
-  //   item_id: "item1",
-  //   units: 16,
-  //   date: "2022-11-19",
-  //   destination: "d2"
-  // },
-  // {
-  //   id: "outbound5",
-  //   created_at: "2022-10-01T12:56:25.000Z",
-  //   item_id: "item2",
-  //   units: 24,
-  //   date: "2022-11-21",
-  //   destination: "d2"
-  // },
-  // {
-  //   id: "outbound6",
-  //   created_at: "2022-10-01T12:56:36.000Z",
-  //   item_id: "item2",
-  //   units: 24,
-  //   date: "2022-11-22",
-  //   destination: "d1"
-  // },
-  // {
-  //   id: "outbound7",
-  //   created_at: "2022-10-01T12:56:41.000Z",
-  //   item_id: "item1",
-  //   units: 48,
-  //   date: "2022-11-22",
-  //   destination: "d1"
-  // },
-  // {
-  //   id: "outbound8",
-  //   created_at: "2022-10-01T12:56:41.000Z",
-  //   item_id: "item1",
-  //   units: 15,
-  //   date: "2022-11-12",
-  //   destination: "d1"
-  // },
-  // {
-  //   id: "outbound9",
-  //   created_at: "2022-10-01T12:56:41.000Z",
-  //   item_id: "item1",
-  //   units: 71,
-  //   date: "2022-11-22",
-  //   destination: "d3"
-  // }
-]
 
 const outboundsSlice = createSlice({
   name: "outbounds",
-  initialState,
+  initialState: {
+    data: [],
+    status: "idle" // idle | loading | success | error
+  },
   reducers: {
     outboundAdded(state, action) {
-      state.push(action.payload)
+      state.data.push(action.payload)
+      state.status = "success"
     },
     outboundRemoved(state, action) {
-      return state.filter((el) => el.id !== action.payload)
+      state.status = "success"
+      state.data = state.data.filter((el) => el.id !== action.payload.id)
     },
     outboundEdited(state, action) {
-      const index = state.findIndex((el) => el.id === action.payload.editedId)
-      state[index] = { ...state[index], ...action.payload }
+      const index = state.data.findIndex(
+        (el) => el.id === action.payload.id
+      )
+      state.data[index] = { ...state.data[index], ...action.payload }
+      state.status = "success"
     },
     outboundsLoaded(state, action) {
-      return state.concat(action.payload)
+      state.data = action.payload
+    },
+    outboundRemoveRequested(state, action) {
+      state.status = "loading"
+    },
+    outboundAddRequested(state, action) {
+      state.status = "loading"
+    },
+    outboundEditRequested(state, action) {
+      state.status = "loading"
+    },
+    outboundStatusError(state) {
+      state.status = "error"
+    },
+    outboundStatusReset(state) {
+      state.status = "idle"
     }
   },
   extraReducers: (builder) =>
@@ -113,11 +62,16 @@ export const {
   outboundAdded,
   outboundRemoved,
   outboundEdited,
-  outboundsLoaded
+  outboundsLoaded,
+  outboundRemoveRequested,
+  outboundAddRequested,
+  outboundEditRequested,
+  outboundStatusError,
+  outboundStatusReset
 } = outboundsSlice.actions
 
 export const selectOutboundsByDestinationId = (state, destinationId) => {
-  const filtered = state.outbounds.filter(
+  const filtered = state.outbounds.data.filter(
     (outbound) => outbound.destination === destinationId
   )
   const outbounds = filtered.map((outbound) => {
@@ -133,7 +87,7 @@ export const selectOutboundsByDestinationId = (state, destinationId) => {
 }
 
 export const selectOutbound = (state, outboundId) => {
-  const outbound = state.outbounds.find(
+  const outbound = state.outbounds.data.find(
     (outbound) => outbound.id === outboundId
   )
   if (!outbound) return null
@@ -143,11 +97,11 @@ export const selectOutbound = (state, outboundId) => {
   }
 }
 
-export const selectAllOutbounds = (state) => state.outbounds
+export const selectAllOutbounds = (state) => state.outbounds.data
 
 export const getOutboundValues = (state) => {
   return state.destinations.data.map((destination) => {
-    const value = state.outbounds.reduce((previous, current) => {
+    const value = state.outbounds.data.reduce((previous, current) => {
       if (current.destination === destination.id) {
         return (
           previous + getItemAveragePrice(state, current.item_id) * current.units

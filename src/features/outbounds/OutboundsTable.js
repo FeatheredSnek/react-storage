@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { useDispatch } from "react-redux"
-import { outboundRemoved } from "./outboundsSlice"
+import { outboundRemoveRequested } from "./outboundsSlice"
 import { Table, Space, Divider, Typography } from "antd"
 
 import OutboundForm from "./OutboundForm"
@@ -43,14 +43,12 @@ const OutboundsTable = ({ tableData }) => {
   }
 
   const openModal = (id) => {
-    console.log(`passed in id ${id}`)
     setFormItemId(id)
     setIsModalOpen(true)
   }
 
   const deleteHandler = (id) => {
-    console.log(`delete item with id ${id}`)
-    dispatch(outboundRemoved(id))
+    dispatch(outboundRemoveRequested({id}))
   }
 
   const columns = [

@@ -1,11 +1,12 @@
 import React, { useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
-import { Modal, Form, InputNumber, DatePicker, Select } from "antd"
-import { selectOutbound, outboundAdded, outboundEdited } from "./outboundsSlice"
+import { Modal, Form, Button, InputNumber, DatePicker, Select } from "antd"
+import {
+  selectOutbound,
+  outboundAddRequested,
+  outboundEditRequested
+} from "./outboundsSlice"
 import { getAllItems } from "../../store/itemsSlice"
-
-// temporary, uid generation will ultimately occur server-side
-import { nanoid } from "@reduxjs/toolkit"
 
 import moment from "moment"
 import "../../components/ModalForm.css"
@@ -15,6 +16,7 @@ const { Option } = Select
 const OutboundForm = ({ open, modalCloseHandler, actionType, actionId }) => {
   const editedItemData = useSelector((state) => selectOutbound(state, actionId))
   const allItems = useSelector(getAllItems)
+  const loaderStatus = useSelector((state) => state.outbounds.status)
 
   const [form] = Form.useForm()
 
@@ -49,34 +51,28 @@ const OutboundForm = ({ open, modalCloseHandler, actionType, actionId }) => {
       .validateFields()
       .then((values) => {
         console.log(values)
-        const id = nanoid()
-        const item_id =
-          actionType === "edit"
-            ? editedItemData.item_id
-            : allItems.find((i) => i.id === values.item.value).id
+        const item_id = allItems.find((i) => i.id === values.item.value).id
         const date =
           values.date instanceof moment
             ? values.date.format("YYYY-MM-DD")
             : values.date
-        const created_at = new Date().toISOString()
         const { units } = values
         const destination = actionId
 
         if (actionType === "add") {
           dispatch(
-            outboundAdded({
-              id,
+            outboundAddRequested({
               item_id,
               date,
-              created_at,
               units,
               destination
             })
           )
         } else if (actionType === "edit") {
-          dispatch(outboundEdited({ editedId: actionId, item_id, date, units }))
+          dispatch(
+            outboundEditRequested({ id: actionId, item_id, date, units })
+          )
         }
-        modalCloseHandler()
       })
       .catch((err) => console.warn(err))
   }
@@ -84,6 +80,14 @@ const OutboundForm = ({ open, modalCloseHandler, actionType, actionId }) => {
   const handleCancel = () => {
     modalCloseHandler()
   }
+
+  useEffect(() => {
+    if (loaderStatus === "success") {
+      modalCloseHandler()
+    } else if (loaderStatus === "error") {
+      modalCloseHandler()
+    }
+  }, [loaderStatus, modalCloseHandler])
 
   const formTitle = () => {
     let title = actionType[0].toUpperCase() + actionType.slice(1) + "outbound"
@@ -110,6 +114,18 @@ const OutboundForm = ({ open, modalCloseHandler, actionType, actionId }) => {
       onOk={handleSubmit}
       onCancel={handleCancel}
       title={formTitle()}
+      footer={
+        <>
+          <Button onClick={handleCancel}>Cancel</Button>
+          <Button
+            onClick={handleSubmit}
+            type="primary"
+            loading={loaderStatus === "loading"}
+          >
+            Save
+          </Button>
+        </>
+      }
     >
       <Form
         form={form}

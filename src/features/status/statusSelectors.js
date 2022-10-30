@@ -10,7 +10,7 @@ export const statusSelector = (state) => {
       .reduce((previous, current) => {
         return previous + current.units
       }, 0)
-    const outbound = state.outbounds
+    const outbound = state.outbounds.data
       .filter((outbound) => outbound.item_id === item.id)
       .reduce((previous, current) => {
         return previous + current.units
@@ -36,7 +36,7 @@ export const getStockByItemId = (state, itemId) => {
   // combine inbounds and outbounds for a particular item into 1 simplified array
   let records = state.inbounds
     .filter((el) => el.item_id === itemId)
-    .concat(state.outbounds.filter((el) => el.item_id === itemId))
+    .concat(state.outbounds.data.filter((el) => el.item_id === itemId))
     .map((el) => {
       return {
         date: moment(el.date).valueOf(),
@@ -81,7 +81,7 @@ export const getPriceSeries = (state, itemId) => {
 }
 
 export const getCurrentStocks = (state) => {
-  let records = state.inbounds.concat(state.outbounds)
+  let records = state.inbounds.concat(state.outbounds.data)
   return state.items.map((item) => {
     const stock = records.reduce((previous, current) => {
       if (current.item_id === item.id) {
