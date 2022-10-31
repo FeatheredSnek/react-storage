@@ -4,6 +4,11 @@
   min-height: 100vh;
 }
 
+.Sider {
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+  z-index: 1;
+}
+
 .Sider > * {
   width: 100%;
   display: grid;
