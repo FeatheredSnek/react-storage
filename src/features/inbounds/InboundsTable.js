@@ -61,7 +61,6 @@ const InboundsTable = ({ tableData }) => {
   }
 
   const openModalForm = (id) => {
-    console.log(lastOfKind(tableData, id))
     if (lastOfKind(tableData, id)) {
       setIsEditedLastOfKind(true)
     }

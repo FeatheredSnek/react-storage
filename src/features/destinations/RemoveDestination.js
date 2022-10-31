@@ -23,7 +23,7 @@ const RemoveDestination = ({ destinationId }) => {
       items={[
         {
           key: "1",
-          label: <span onClick={openModal}>Remove destination-{loaderStatus}</span>
+          label: <span onClick={openModal}>Remove destination</span>
         }
       ]}
     />

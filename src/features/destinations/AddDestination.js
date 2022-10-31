@@ -15,7 +15,6 @@ const AddDestination = () => {
   const loaderStatus = useSelector((state) => state.destinations.status)
 
   useEffect(() => {
-    console.log('add destination effect');
     if (loaderStatus === "success") {
       closeModal()
     } else if (loaderStatus === "error") {

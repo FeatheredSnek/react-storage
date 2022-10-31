@@ -62,13 +62,10 @@ const Menu = () => {
     const { pathname } = location
     switch (pathname) {
       case "/":
-        console.log("path to home")
         return ["overview"]
       case "/status":
-        console.log("path to staus")
         return ["status"]
       case "/inbounds":
-        console.log("path to inbounds")
         return ["inbounds"]
       default:
         break

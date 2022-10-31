@@ -12,8 +12,6 @@ const inboundsSlice = createSlice({
     // if thats a new item type it also needs to add item type
     // via items/itemAdded - and do it first so it has the proper item id
     inboundAdded(state, action) {
-      console.log('payload in reducer');
-      console.log(action.payload);
       state.data.push(action.payload)
       state.status = "success"
     },
