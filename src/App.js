@@ -14,12 +14,14 @@ import StatusPage from "./features/status/StatusPage"
 import ErrorPage from "./components/ErrorPage"
 import AddDestination from "./features/destinations/AddDestination"
 import TheNotificator from "./components/TheNotificator"
+import TheLoader from "./components/TheLoader"
 
 const { Content, Sider } = Layout
 
 const App = () => {
   return (
     <BrowserRouter>
+      <TheLoader>
       <TheNotificator/>
       <Layout>
         <Sider
@@ -47,6 +49,7 @@ const App = () => {
           </Content>
         </Layout>
       </Layout>
+      </TheLoader>
     </BrowserRouter>
   )
 }
