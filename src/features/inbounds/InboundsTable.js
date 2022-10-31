@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react"
 import {
   Table,
   Space,
-  Divider,
-  Typography,
   Modal as DeleteModal,
   Button
 } from "antd"
@@ -78,9 +76,10 @@ const InboundsTable = ({ tableData }) => {
   const loaderStatus = useSelector((state) => state.inbounds.status)
 
   const deleteHandler = (id) => {
+    setDeletedInboundId(id)
     if (lastOfKind(tableData, id)) {
-      setIsDeleteModalOpen(true)
       setDeletedInboundId(id)
+      setIsDeleteModalOpen(true)
       return
     }
     dispatch(inboundRemoveRequested({ id }))
@@ -118,14 +117,24 @@ const InboundsTable = ({ tableData }) => {
       title: "Actions",
       key: "actions",
       render: (_, record) => (
-        <Space split={<Divider type="vertical" />}>
-          <Typography.Link onClick={() => openModalForm(record.id)}>
+        <>
+          <Button type="link" onClick={() => openModalForm(record.id)}>
             Edit
-          </Typography.Link>
-          <Typography.Link onClick={() => deleteHandler(record.id)}>
+          </Button>
+          <Button
+            type="link"
+            style={{
+              display: "inline-flex",
+              "min-width": "100px"
+            }}
+            onClick={() => deleteHandler(record.id)}
+            loading={
+              record.id === deletedInboundId && loaderStatus === "loading"
+            }
+          >
             Delete
-          </Typography.Link>
-        </Space>
+          </Button>
+        </>
       )
     }
   ]

@@ -1,7 +1,7 @@
 import React, { useState } from "react"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { outboundRemoveRequested } from "./outboundsSlice"
-import { Table, Space, Divider, Typography } from "antd"
+import { Table, Button } from "antd"
 
 import OutboundForm from "./OutboundForm"
 
@@ -20,10 +20,11 @@ const staticCols = [
     title: "Avg. price per unit",
     dataIndex: "itemAveragePrice",
     key: "itemAveragePrice",
-    render: (data) => data.toLocaleString("pl-PL", {
-      style: "currency",
-      currency: "PLN"
-    })
+    render: (data) =>
+      data.toLocaleString("pl-PL", {
+        style: "currency",
+        currency: "PLN"
+      })
   },
   {
     title: "Quantity",
@@ -35,8 +36,11 @@ const staticCols = [
 const OutboundsTable = ({ tableData }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [formItemId, setFormItemId] = useState(null)
+  const [deletedId, setDeletedId] = useState(null)
 
   const dispatch = useDispatch()
+
+  const loaderStatus = useSelector((state) => state.outbounds.status)
 
   const closeModal = () => {
     setIsModalOpen(false)
@@ -48,7 +52,8 @@ const OutboundsTable = ({ tableData }) => {
   }
 
   const deleteHandler = (id) => {
-    dispatch(outboundRemoveRequested({id}))
+    setDeletedId(id)
+    dispatch(outboundRemoveRequested({ id }))
   }
 
   const columns = [
@@ -57,14 +62,22 @@ const OutboundsTable = ({ tableData }) => {
       title: "Actions",
       key: "actions",
       render: (_, record) => (
-        <Space split={<Divider type="vertical" />}>
-          <Typography.Link onClick={() => openModal(record.key)}>
+        <>
+          <Button type="link" onClick={() => openModal(record.key)}>
             Edit
-          </Typography.Link>
-          <Typography.Link onClick={() => deleteHandler(record.key)}>
+          </Button>
+          <Button
+            style={{
+              display: "inline-flex",
+              "min-width": "100px"
+            }}
+            type="link"
+            onClick={() => deleteHandler(record.key)}
+            loading={record.key === deletedId && loaderStatus === "loading"}
+          >
             Delete
-          </Typography.Link>
-        </Space>
+          </Button>
+        </>
       )
     }
   ]
