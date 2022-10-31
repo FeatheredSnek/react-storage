@@ -12,9 +12,25 @@
 }
 
 .Sider-head {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.3em;
   height: 32px;
   margin: 16px;
-  background: #ddd;
+  color: #1890ff;
+}
+
+.Sider-head > svg {
+  height: 100%;
+  max-width: 32px;
+  margin-right: 4px;
+}
+
+.Sider-head span {
+  color: black;
 }
 
 .Sider-buttons {
