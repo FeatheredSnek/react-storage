@@ -13,12 +13,14 @@ import OverviewPage from "./features/overview/OverviewPage"
 import StatusPage from "./features/status/StatusPage"
 import ErrorPage from "./components/ErrorPage"
 import AddDestination from "./features/destinations/AddDestination"
+import Notificator from "./components/Notificator"
 
 const { Content, Sider } = Layout
 
 const App = () => {
   return (
     <BrowserRouter>
+      <Notificator/>
       <Layout>
         <Sider
           className="Sider Sider--sticky"
