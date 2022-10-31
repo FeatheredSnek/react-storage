@@ -12,17 +12,13 @@ import {
 import ApexChart from "react-apexcharts"
 import { Link } from "react-router-dom"
 import { useNavigate } from "react-router-dom"
-import { QuestionCircleOutlined } from "@ant-design/icons"
+import { GithubOutlined } from "@ant-design/icons"
 import AddDestination from "../destinations/AddDestination"
 import { getInboundsValue } from "../inbounds/inboundsSlice"
 import "./OverviewPage.css"
 import { useSelector } from "react-redux"
 import { getOutboundValues } from "../outbounds/outboundsSlice"
 import { getCurrentStocks } from "../status/statusSelectors"
-
-// temporary
-import { loadingStarted } from "../../store/loaderSlice"
-import { useDispatch } from "react-redux"
 
 const { Text, Title } = Typography
 
@@ -63,7 +59,7 @@ const barchartOptions = {
           height: 200
         },
         legend: {
-          show: false,
+          show: false
         }
       }
     },
@@ -75,7 +71,7 @@ const barchartOptions = {
           height: 220
         },
         legend: {
-          show: false,
+          show: false
         }
       }
     }
@@ -111,14 +107,6 @@ const piechartStaticOptions = {
 }
 
 const OverviewPage = () => {
-
-  // temporary
-  const dispatch = useDispatch()
-  const loaderStatus = useSelector(state => state.loader.status)
-  const handleTest = () => {
-    dispatch(loadingStarted())
-  }
-
   const currentStocks = useSelector(getCurrentStocks)
   const outboundValues = useSelector(getOutboundValues)
   const inboundsTotalValue = useSelector(getInboundsValue)
@@ -150,8 +138,7 @@ const OverviewPage = () => {
     <div className="OverviewPage-wrapper">
       <PageHeader
         ghost={false}
-        // temporary
-        title={`Dashboard -- status: ${loaderStatus}`}
+        title="Dashboard"
         extra={[
           <Link to="/status" key="3">
             <Button>Stock status</Button>
@@ -159,9 +146,13 @@ const OverviewPage = () => {
           <Link to="/inbounds" key="2">
             <Button>Inbounds</Button>
           </Link>,
-          <Button icon={<QuestionCircleOutlined />} key="1" type="primary" />,
-          // temporary
-          <Button key="69" onClick={handleTest}>Load data</Button>
+          <a
+            href="https://github.com/FeatheredSnek/react-storage"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Button icon={<GithubOutlined />} key="1" type="primary" />
+          </a>
         ]}
       />
 
@@ -273,7 +264,14 @@ const OverviewPage = () => {
         </Row>
       </div>
       <div className="OverviewPage-footer">
-        ©2022 App Company - <Typography.Link>Report issue</Typography.Link>
+        ©2022 App Company -{" "}
+        <a
+          href="https://github.com/FeatheredSnek/react-storage"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Code on GitHub
+        </a>
       </div>
     </div>
   )
