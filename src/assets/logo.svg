@@ -7,15 +7,14 @@
    viewBox="0 0 60 60"
    version="1.1"
    id="svg5"
-
+   xmlnssvg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
    xmlnssvg="http://www.w3.org/2000/svg">
-
   <defs
      id="defs2" />
   <g
      id="layer1"
-     transform="translate(-39.723034,-12.190763)"
+     transform="matrix(1.0778515,0,0,1.0778515,-42.965032,-13.531644)"
      style="fill:#1890ff;fill-opacity:1">
     <path
        id="rect234"
