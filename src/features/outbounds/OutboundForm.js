@@ -14,7 +14,9 @@ import "../../components/ModalForm.css"
 const { Option } = Select
 
 const OutboundForm = ({ open, modalCloseHandler, actionType, actionId }) => {
-  const editedItemData = useSelector((state) => selectOutbound(state, actionId))
+  const editedRecordData = useSelector((state) =>
+    selectOutbound(state, actionId)
+  )
   const allItems = useSelector(getAllItems)
   const loaderStatus = useSelector((state) => state.outbounds.status)
 
@@ -27,14 +29,14 @@ const OutboundForm = ({ open, modalCloseHandler, actionType, actionId }) => {
   }, [open, form, actionId])
 
   const initialValues = {
-    item: editedItemData
+    item: editedRecordData
       ? {
-          value: editedItemData.id,
-          label: allItems.find((i) => i.id === editedItemData.item_id).name
+          value: allItems.find((i) => i.id === editedRecordData.item_id).id,
+          label: allItems.find((i) => i.id === editedRecordData.item_id).name
         }
       : { value: null, label: null },
-    units: editedItemData ? editedItemData.units : "",
-    date: editedItemData ? moment(editedItemData.date, "YYYY-MM-DD") : ""
+    units: editedRecordData ? editedRecordData.units : "",
+    date: editedRecordData ? moment(editedRecordData.date, "YYYY-MM-DD") : ""
   }
 
   const handleSubmit = () => {
@@ -50,8 +52,7 @@ const OutboundForm = ({ open, modalCloseHandler, actionType, actionId }) => {
     form
       .validateFields()
       .then((values) => {
-        console.log(values)
-        const item_id = allItems.find((i) => i.id === values.item.value).id
+        const item_id = values.item.value
         const date =
           values.date instanceof moment
             ? values.date.format("YYYY-MM-DD")
@@ -94,8 +95,6 @@ const OutboundForm = ({ open, modalCloseHandler, actionType, actionId }) => {
     if (actionType === "edit") title += ` #${actionId}`
     return <strong>{title}</strong>
   }
-
-  const handleSelect = (value) => console.log(value)
 
   const options = () => {
     return allItems.map((item) => {
@@ -152,7 +151,6 @@ const OutboundForm = ({ open, modalCloseHandler, actionType, actionId }) => {
             labelInValue
             placeholder="Select a person"
             optionFilterProp="children"
-            onChange={handleSelect}
             filterOption={(input, option) =>
               option.children.toLowerCase().includes(input.toLowerCase())
             }
