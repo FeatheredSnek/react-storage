@@ -4,9 +4,12 @@ import OutboundForm from "../features/outbounds/OutboundForm"
 import InboundForm from "../features/inbounds/InboundForm"
 import RemoveDestination from "../features/destinations/RemoveDestination"
 import { useNavigate } from "react-router-dom"
+import { useSelector } from "react-redux"
 
 const TableHeader = ({ title, subTitle, actionScope, actionId }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const inboundLoaderStatus = useSelector((state) => state.inbounds.status)
+  const outboundLoaderStatus = useSelector((state) => state.outbounds.status)
 
   const closeModal = () => {
     setIsModalOpen(false)
@@ -17,7 +20,7 @@ const TableHeader = ({ title, subTitle, actionScope, actionId }) => {
   }
 
   const navigate = useNavigate()
-  const navigateHome = () => navigate('/')
+  const navigateHome = () => navigate("/")
 
   return (
     <>
@@ -27,7 +30,14 @@ const TableHeader = ({ title, subTitle, actionScope, actionId }) => {
         subTitle={subTitle}
         extra={
           <>
-            <Button type="primary" onClick={openModal}>
+            <Button
+              type="primary"
+              onClick={openModal}
+              disabled={
+                inboundLoaderStatus !== "idle" ||
+                outboundLoaderStatus !== "idle"
+              }
+            >
               Add {actionScope}
             </Button>
             {actionScope === "outbound" ? (
