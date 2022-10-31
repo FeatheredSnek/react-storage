@@ -32,7 +32,8 @@ const api = {
   async remove(url, data) {
     const options = {
       // i really dont want to configure preflights on my dev php server so post it is
-      method: process.env.NODE_ENV === 'production' ? 'DELETE' : 'POST',
+      // method: process.env.NODE_ENV === 'production' ? 'DELETE' : 'POST',
+      method: 'POST',
       headers: {
         Accept: "application/json, text/plain, */*",
         "Content-Type": "text/plain" // it looks like my cors settings dont like app/json
@@ -51,7 +52,8 @@ const api = {
   async edit(url, data) {
     const options = {
       // i really dont want to configure preflights on my dev php server so post it is
-      method: process.env.NODE_ENV === 'production' ? 'PUT' : 'POST',
+      // method: process.env.NODE_ENV === 'production' ? 'PUT' : 'POST',
+      method: 'POST',
       headers: {
         Accept: "application/json, text/plain, */*",
         "Content-Type": "text/plain" // it looks like my cors settings dont like app/json
