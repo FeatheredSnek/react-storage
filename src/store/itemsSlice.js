@@ -27,12 +27,12 @@ const itemsSlice = createSlice({
       return state.filter((el) => el.id !== action.payload)
     },
     itemsLoaded(state, action) {
-      return state.concat(action.payload)
+      return action.payload
     }
   },
   extraReducers: (builder) =>
     builder.addCase(lastInboundRemoved, (state, action) => {
-      return state.filter((el) => el.id !== action.payload.itemId)
+      return state.filter((el) => el.id !== action.payload.item_id)
     })
 })
 
@@ -44,7 +44,7 @@ export const getItemName = (state, itemId) =>
   state.items.find((item) => item.id === itemId).name
 
 export const getItemAveragePrice = (state, itemId) => {
-  const itemInbounds = state.inbounds.filter(
+  const itemInbounds = state.inbounds.data.filter(
     (inbound) => inbound.item_id === itemId
   )
   return (

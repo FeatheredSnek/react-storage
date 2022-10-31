@@ -8,18 +8,19 @@ import {
   InputNumber,
   DatePicker,
   Tag,
-  Tooltip
+  Tooltip,
+  Button
 } from "antd"
-import { selectInbound, inboundAdded, inboundEdited } from "./inboundsSlice"
-import { itemAdded, getAllItems } from "../../store/itemsSlice"
-
-// temporary, uid generation will ultimately occur server-side
-import { nanoid } from "@reduxjs/toolkit"
+import {
+  selectInbound,
+  inboundAddRequested,
+  inboundEditRequested
+} from "./inboundsSlice"
+import { getAllItems } from "../../store/itemsSlice"
 
 import moment from "moment"
 import "../../components/ModalForm.css"
 import notifications from "../../components/notifications"
-
 
 const InboundForm = ({
   open,
@@ -89,38 +90,25 @@ const InboundForm = ({
     form
       .validateFields()
       .then((values) => {
-        if (isNewItem) {
-          // is this the creative var usage that the guy at medium wrote about?
-          var itemPayload = {
-            id: nanoid(),
-            name: values.itemName
-          }
-          dispatch(itemAdded(itemPayload))
-        }
-
-        const id = nanoid()
-        const item_id = isNewItem
-          ? itemPayload.id
-          : allItems.find((i) => i.name === values.itemName).id
+        // prepare payload
+        const { price, units } = values
         const date =
           values.date instanceof moment
             ? values.date.format("YYYY-MM-DD")
             : values.date
-        const created_at = new Date().toISOString()
-        const { price, units } = values
+        const payload = { price, units, date }
+        if (isNewItem) {
+          payload.name = values.itemName
+        } else {
+          payload.item_id = allItems.find((i) => i.name === values.itemName).id
+        }
 
         if (actionType === "add") {
-          dispatch(
-            inboundAdded({ id, item_id, date, created_at, price, units })
-          )
+          dispatch(inboundAddRequested(payload))
         } else if (actionType === "edit") {
-          dispatch(
-            inboundEdited({ editedId: actionId, item_id, date, units, price })
-          )
+          payload.id = actionId
+          dispatch(inboundEditRequested(payload))
         }
-        setIsTooltipOpen(false)
-        notifications.success()
-        modalCloseHandler()
       })
       .catch((err) => console.warn(err))
   }
@@ -129,6 +117,18 @@ const InboundForm = ({
     setIsTooltipOpen(false)
     modalCloseHandler()
   }
+
+  const loaderStatus = useSelector((state) => state.inbounds.status)
+
+  useEffect(() => {
+    if (loaderStatus === "success") {
+      modalCloseHandler()
+      setIsTooltipOpen(false)
+    } else if (loaderStatus === "error") {
+      modalCloseHandler()
+      setIsTooltipOpen(false)
+    }
+  }, [loaderStatus, modalCloseHandler])
 
   const formTitle = () => {
     let title = actionType[0].toUpperCase() + actionType.slice(1) + " inbound"
@@ -153,6 +153,18 @@ const InboundForm = ({
       onOk={handleSubmit}
       onCancel={handleCancel}
       title={formTitle()}
+      footer={
+        <>
+          <Button onClick={handleCancel}>Cancel</Button>
+          <Button
+            onClick={handleSubmit}
+            loading={loaderStatus === "loading"}
+            type="primary"
+          >
+            Save
+          </Button>
+        </>
+      }
     >
       <Form
         form={form}

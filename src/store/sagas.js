@@ -1,25 +1,43 @@
-import { takeEvery, put, call, all, race, delay, takeLatest } from "redux-saga/effects"
+import {
+  takeEvery,
+  put,
+  call,
+  all,
+  race,
+  delay,
+  takeLatest,
+  takeLeading
+} from "redux-saga/effects"
 import api from "../api"
 
 import { itemsLoaded } from "./itemsSlice"
-import { destinationsLoaded } from "../features/destinations/destinationsSlice"
-import { inboundsLoaded } from "../features/inbounds/inboundsSlice"
-import { outboundsLoaded } from "../features/outbounds/outboundsSlice"
 import { loadingSuccess, loadingError } from "./loaderSlice"
 
 import {
+  destinationsLoaded,
   destinationAdded,
   destinationRemoved,
   destinationStatusError,
   destinationStatusReset
 } from "../features/destinations/destinationsSlice"
 import {
+  outboundsLoaded,
   outboundRemoved,
   outboundAdded,
   outboundEdited,
   outboundStatusError,
   outboundStatusReset
 } from "../features/outbounds/outboundsSlice"
+import {
+  inboundsLoaded,
+  lastInboundRemoved,
+  inboundAdded,
+  inboundRemoved,
+  inboundEdited,
+  inboundStatusError,
+  inboundStatusReset
+} from "../features/inbounds/inboundsSlice"
+
 
 function* fetchDataWorker() {
   try {
@@ -137,7 +155,6 @@ function* addOutboundSaga() {
   yield takeEvery("outbounds/outboundAddRequested", addOutboundWorker)
 }
 
-
 function* editOutboundWorker(action) {
   console.log(action.payload)
   try {
@@ -167,7 +184,6 @@ function* editOutboundSaga() {
   yield takeEvery("outbounds/outboundEditRequested", editOutboundWorker)
 }
 
-
 function* removeOutboundWorker(action) {
   console.log(action.payload)
   try {
@@ -194,9 +210,126 @@ function* removeOutboundWorker(action) {
 }
 
 function* removeOutboundSaga() {
-  yield takeLatest(
-    "outbounds/outboundRemoveRequested",
-    removeOutboundWorker
+  yield takeLatest("outbounds/outboundRemoveRequested", removeOutboundWorker)
+}
+
+
+function* addInboundWorker(action) {
+  console.log(action.payload)
+  try {
+    const { inboundData, timeout } = yield race({
+      inboundData: call(
+        api.add,
+        process.env.REACT_APP_API_INBOUNDS_ADD,
+        action.payload
+      ),
+      timeout: call(api.timeout)
+    })
+
+    if (timeout) throw new Error(timeout)
+
+    if (action.payload.item_id) {
+      console.log(inboundData)
+      yield put(inboundAdded(inboundData))
+    } else {
+      const itemsData = yield call(api.get, process.env.REACT_APP_API_ITEMS_GET)
+      yield all([put(inboundAdded(inboundData)), put(itemsLoaded(itemsData))])
+    }
+
+    yield delay(100)
+    yield put(inboundStatusReset())
+  } catch (error) {
+    console.log(error)
+    yield put(inboundStatusError())
+    yield delay(100)
+    yield put(inboundStatusReset())
+  }
+}
+
+function* addInboundSaga() {
+  yield takeEvery("inbounds/inboundAddRequested", addInboundWorker)
+}
+
+function* editInboundWorker(action) {
+  console.log(action.payload)
+  try {
+    const { inboundData, timeout } = yield race({
+      inboundData: call(
+        api.edit,
+        process.env.REACT_APP_API_INBOUNDS_EDIT,
+        action.payload
+      ),
+      timeout: call(api.timeout)
+    })
+
+    if (timeout) throw new Error(timeout)
+
+    if (action.payload.item_id) {
+      console.log(inboundData)
+      yield put(inboundEdited(inboundData))
+    } else {
+      const itemsData = yield call(api.get, process.env.REACT_APP_API_ITEMS_GET)
+      yield all([put(inboundEdited(inboundData)), put(itemsLoaded(itemsData))])
+    }
+
+    yield delay(100)
+    yield put(inboundStatusReset())
+  } catch (error) {
+    console.log(error)
+    yield put(inboundStatusError())
+    yield delay(100)
+    yield put(inboundStatusReset())
+  }
+}
+
+function* editInboundSaga() {
+  yield takeEvery("inbounds/inboundEditRequested", editInboundWorker)
+}
+
+function* removeInboundWorker(isLastInbound = false, action) {
+  console.log(action.payload)
+  try {
+    const { data, timeout } = yield race({
+      data: call(
+        api.remove,
+        process.env.REACT_APP_API_INBOUNDS_DELETE,
+        action.payload
+      ),
+      timeout: call(api.timeout)
+    })
+
+    if (timeout) throw new Error(timeout)
+
+    if (isLastInbound) {
+      yield put(
+        lastInboundRemoved({ ...data, item_id: action.payload.item_id })
+      )
+    } else {
+      yield put(inboundRemoved(data))
+    }
+    yield delay(100)
+    yield put(inboundStatusReset())
+  } catch (error) {
+    console.log(error)
+    yield put(inboundStatusError())
+    yield delay(100)
+    yield put(inboundStatusReset())
+  }
+}
+
+function* removeInboundSaga() {
+  yield takeLeading(
+    "inbounds/inboundRemoveRequested",
+    removeInboundWorker,
+    false
+  )
+}
+
+function* removeLastInboundSaga() {
+  yield takeLeading(
+    "inbounds/lastInboundRemoveRequested",
+    removeInboundWorker,
+    true
   )
 }
 
@@ -208,7 +341,11 @@ function* rootSaga() {
     removeDestinationSaga(),
     addOutboundSaga(),
     editOutboundSaga(),
-    removeOutboundSaga()
+    removeOutboundSaga(),
+    addInboundSaga(),
+    editInboundSaga(),
+    removeInboundSaga(),
+    removeLastInboundSaga()
   ])
 }
 

@@ -5,7 +5,7 @@ export const statusSelector = (state) => {
   let output = []
   for (let item of state.items) {
     const price = getItemAveragePrice(state, item.id)
-    const inbound = state.inbounds
+    const inbound = state.inbounds.data
       .filter((inbound) => inbound.item_id === item.id)
       .reduce((previous, current) => {
         return previous + current.units
@@ -27,14 +27,14 @@ export const statusSelector = (state) => {
 
 // wrong, thats only inbounds value
 export const getTotalValue = (state) => {
-  return state.inbounds.reduce((previous, current) => {
+  return state.inbounds.data.reduce((previous, current) => {
     return previous + current.units * current.price
   }, 0)
 }
 
 export const getStockByItemId = (state, itemId) => {
   // combine inbounds and outbounds for a particular item into 1 simplified array
-  let records = state.inbounds
+  let records = state.inbounds.data
     .filter((el) => el.item_id === itemId)
     .concat(state.outbounds.data.filter((el) => el.item_id === itemId))
     .map((el) => {
@@ -67,7 +67,7 @@ export const getStockByItemId = (state, itemId) => {
 }
 
 export const getPriceSeries = (state, itemId) => {
-  let records = state.inbounds
+  let records = state.inbounds.data
     .filter((el) => el.item_id === itemId)
     .map((el) => {
       return {
@@ -81,7 +81,7 @@ export const getPriceSeries = (state, itemId) => {
 }
 
 export const getCurrentStocks = (state) => {
-  let records = state.inbounds.concat(state.outbounds.data)
+  let records = state.inbounds.data.concat(state.outbounds.data)
   return state.items.map((item) => {
     const stock = records.reduce((previous, current) => {
       if (current.item_id === item.id) {

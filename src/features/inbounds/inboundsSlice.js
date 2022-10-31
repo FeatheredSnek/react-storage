@@ -2,89 +2,61 @@ import { createSlice } from "@reduxjs/toolkit"
 
 import { getItemName } from "../../store/itemsSlice"
 
-const initialState = [
-  // {
-  //   id: "inbound1",
-  //   created_at: "2022-10-01T12:50:45.000Z",
-  //   item_id: "item1",
-  //   date: "2022-11-09",
-  //   price: 18.0,
-  //   units: 48
-  // },
-  // {
-  //   id: "inbound2",
-  //   created_at: "2022-10-01T12:51:29.000Z",
-  //   item_id: "item2",
-  //   date: "2022-11-09",
-  //   price: 6.99,
-  //   units: 48
-  // },
-  // {
-  //   id: "inbound3",
-  //   created_at: "2022-10-01T12:52:13.000Z",
-  //   item_id: "item1",
-  //   date: "2022-11-12",
-  //   price: 19.5,
-  //   units: 144
-  // },
-  // {
-  //   id: "inbound4",
-  //   created_at: "2022-10-01T12:52:32.000Z",
-  //   item_id: "item1",
-  //   date: "2022-11-13",
-  //   price: 19.5,
-  //   units: 48
-  // },
-  // {
-  //   id: "inbound5",
-  //   created_at: "2022-10-01T12:52:46.000Z",
-  //   item_id: "item2",
-  //   date: "2022-11-13",
-  //   price: 6.99,
-  //   units: 96
-  // },
-  // {
-  //   id: "inbound6",
-  //   created_at: "2022-10-01T14:11:11.000Z",
-  //   item_id: "item3",
-  //   date: "2022-11-20",
-  //   price: 113.6,
-  //   units: 12
-  // },
-  // {
-  //   id: "inbound7",
-  //   created_at: "2022-10-01T14:11:11.000Z",
-  //   item_id: "item1",
-  //   date: "2022-11-22",
-  //   price: 13.6,
-  //   units: 55
-  // }
-]
-
 const inboundsSlice = createSlice({
   name: "inbounds",
-  initialState,
+  initialState: {
+    data: [],
+    status: "idle" // idle | loading | success | error
+  },
   reducers: {
     // if thats a new item type it also needs to add item type
     // via items/itemAdded - and do it first so it has the proper item id
     inboundAdded(state, action) {
-      state.push(action.payload)
+      console.log('payload in reducer');
+      console.log(action.payload);
+      state.data.push(action.payload)
+      state.status = "success"
     },
     // need to check if any items of this inbound type are left
     // otherwise remove the item too via items/itemRemoved action
     inboundRemoved(state, action) {
-      return state.filter((el) => el.id !== action.payload)
+      state.data = state.data.filter((el) => el.id !== action.payload.id)
+      state.status = "success"
     },
     inboundEdited(state, action) {
-      const index = state.findIndex((el) => el.id === action.payload.editedId)
-      state[index] = { ...state[index], ...action.payload }
+      const index = state.data.findIndex((el) => el.id === action.payload.id)
       // with double spread the second spread's values overwrite duplicate keys
+      state.data[index] = { ...state.data[index], ...action.payload }
+      state.status = "success"
     },
+    // related entries removal happens server side by sql constraints, so I can either
+    // (1) do the cascade on the frontend - more state work via extra reducers, less requests
+    // (2) do away with extra reducers and tell saga to request all related data on this action
+    // current implementation is (1) simply because thats what static data prototype used ^_^
     lastInboundRemoved(state, action) {
-      return state.filter((el) => el.id !== action.payload.id)
+      state.data = state.data.filter((el) => el.id !== action.payload.id)
+      state.status = "success"
     },
     inboundsLoaded(state, action) {
-      return state.concat(action.payload)
+      return { status: "idle", data: action.payload }
+    },
+    inboundAddRequested(state, action) {
+      state.status = "loading"
+    },
+    inboundEditRequested(state, action) {
+      state.status = "loading"
+    },
+    inboundRemoveRequested(state, action) {
+      state.status = "loading"
+    },
+    lastInboundRemoveRequested(state, action) {
+      state.status = "loading"
+    },
+    inboundStatusError(state) {
+      state.status = "error"
+    },
+    inboundStatusReset(state) {
+      state.status = "idle"
     }
   }
 })
@@ -96,20 +68,28 @@ export const {
   inboundRemoved,
   inboundEdited,
   lastInboundRemoved,
-  inboundsLoaded
+  inboundsLoaded,
+  inboundAddRequested,
+  inboundEditRequested,
+  inboundRemoveRequested,
+  lastInboundRemoveRequested,
+  inboundStatusError,
+  inboundStatusReset
 } = inboundsSlice.actions
 
 export const selectAllInbounds = (state) =>
-  state.inbounds.map((inbound) => {
+  state.inbounds.data.map((inbound) => {
     return { ...inbound, itemName: getItemName(state, inbound.item_id) }
   })
 
 export const selectInboundData = (state, inboundId) => {
-  return { ...state.inbounds.find((el) => el.id === inboundId) }
+  return { ...state.inbounds.data.find((el) => el.id === inboundId) }
 }
 
 export const selectInbound = (state, inboundId) => {
-  const inbound = state.inbounds.find((inbound) => inbound.id === inboundId)
+  const inbound = state.inbounds.data.find(
+    (inbound) => inbound.id === inboundId
+  )
   if (!inbound) return null
   return {
     ...inbound,
@@ -118,7 +98,7 @@ export const selectInbound = (state, inboundId) => {
 }
 
 export const getInboundsValue = (state) => {
-  return state.inbounds.reduce((previous, current) => {
+  return state.inbounds.data.reduce((previous, current) => {
     return previous + current.units * current.price
   }, 0)
 }

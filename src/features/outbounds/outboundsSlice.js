@@ -49,10 +49,10 @@ const outboundsSlice = createSlice({
   extraReducers: (builder) =>
     builder
       .addCase(lastInboundRemoved, (state, action) => {
-        return state.filter((el) => el.item_id !== action.payload.itemId)
+        state.data = state.data.filter((el) => el.item_id !== action.payload.item_id)
       })
       .addCase(destinationRemoved, (state, action) => {
-        return state.filter((el) => el.destination !== action.payload)
+        state.data = state.data.filter((el) => el.destination !== action.payload.id)
       })
 })
 

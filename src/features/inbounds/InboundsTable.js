@@ -1,8 +1,18 @@
-import React, { useState } from "react"
-import { Table, Space, Divider, Typography, Modal as DeleteModal } from "antd"
+import React, { useState, useEffect } from "react"
+import {
+  Table,
+  Space,
+  Divider,
+  Typography,
+  Modal as DeleteModal,
+  Button
+} from "antd"
 import InboundForm from "./InboundForm"
-import { inboundRemoved, lastInboundRemoved } from "./inboundsSlice"
-import { useDispatch } from "react-redux"
+import {
+  inboundRemoveRequested,
+  lastInboundRemoveRequested
+} from "./inboundsSlice"
+import { useDispatch, useSelector } from "react-redux"
 import { WarningOutlined } from "@ant-design/icons"
 
 const staticCols = [
@@ -20,10 +30,11 @@ const staticCols = [
     title: "Price per unit",
     dataIndex: "price",
     key: "price",
-    render: (data) => data.toLocaleString("pl-PL", {
-      style: "currency",
-      currency: "PLN"
-    })
+    render: (data) =>
+      data.toLocaleString("pl-PL", {
+        style: "currency",
+        currency: "PLN"
+      })
   },
   {
     title: "Quantity",
@@ -64,26 +75,33 @@ const InboundsTable = ({ tableData }) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [deletedInboundId, setDeletedInboundId] = useState(null)
 
+  const loaderStatus = useSelector((state) => state.inbounds.status)
+
   const deleteHandler = (id) => {
     if (lastOfKind(tableData, id)) {
       setIsDeleteModalOpen(true)
       setDeletedInboundId(id)
       return
     }
-    dispatch(inboundRemoved(id))
+    dispatch(inboundRemoveRequested({ id }))
   }
 
   const confirmCascadeDelete = () => {
     if (deletedInboundId === null) return
     const id = deletedInboundId
-    const itemId = tableData.find((el) => el.id === id).item_id
-    dispatch(lastInboundRemoved({ id, itemId }))
-    closeDeleteModal()
+    const item_id = tableData.find((el) => el.id === id).item_id
+    dispatch(lastInboundRemoveRequested({ id, item_id }))
   }
 
   const closeDeleteModal = () => {
     setIsDeleteModalOpen(false)
   }
+
+  useEffect(() => {
+    if (loaderStatus === "success") {
+      closeDeleteModal()
+    }
+  }, [loaderStatus])
 
   const deleteModalTitle = () => {
     return (
@@ -124,8 +142,20 @@ const InboundsTable = ({ tableData }) => {
       <DeleteModal
         title={deleteModalTitle()}
         open={isDeleteModalOpen}
-        onOk={() => confirmCascadeDelete(deletedInboundId)}
         onCancel={closeDeleteModal}
+        footer={
+          <>
+            <Button onClick={closeDeleteModal}>Cancel</Button>
+            <Button
+              onClick={() => confirmCascadeDelete(deletedInboundId)}
+              loading={loaderStatus === "loading"}
+              type="primary"
+              danger
+            >
+              Confirm
+            </Button>
+          </>
+        }
       >
         <p>This is the last remaining inbound record of this kind of item</p>
         <p>
