@@ -1,6 +1,7 @@
 # reactStorage
 
 A simple storage/warehouse management app made with React using modern frontend solutions.
+Check it out deployed at [my website](https://dorianm.com/demos/react-storage).
 
 ## Background and purpose
 
@@ -13,5 +14,5 @@ I've used Redux and Redux-Saga for state management, and Ant Design for a slick 
 ## Concluding remarks
 
 It turned out to be quite a substantial task, but I've been able to implement almost all of the functionalities I imagined beforehand. For a sort-of-production build only an additional security checkup and an authorization system would be required - which should be easy to introduce with manually handled user creation.
-Among several todos are (1) custom styling, (2) refactoring saga system, as it's not at all dry atm, quite moist in fact, (3) optimization of multiple renders and memoizing selectors, (4) splitting and recomposing some of the larger components. 
+Among several todos are (1) custom styling, (2) refactoring saga system, as it's not at all dry atm, quite moist in fact, (3) optimization of multiple renders and memoizing selectors, (4) splitting and recomposing some of the larger components.
 Licensed MIT.
