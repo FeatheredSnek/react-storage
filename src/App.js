@@ -21,7 +21,7 @@ const { Content, Sider } = Layout
 
 const App = () => {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/demos/react-storage">
       <TheLoader>
         <TheNotificator />
         <Layout>
