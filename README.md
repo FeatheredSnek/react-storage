@@ -1,70 +1,17 @@
-# Getting Started with Create React App
+# reactStorage
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A simple storage/warehouse management app made with React using modern frontend solutions.
 
-## Available Scripts
+## Background and purpose
 
-In the project directory, you can run:
+With this project I wanted to learn and practice modern React with several important libraries from the ecosystem. Some time ago I built a similar solution using scripts over Google Apps so I had very good idea about which functionalities would be required
 
-### `npm start`
+## How it's made
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+I've used Redux and Redux-Saga for state management, and Ant Design for a slick UI. Although it's by no means a a full-fledged analysis solution, I've added some data trend previews via Apex Charts. The Redux-Saga front communicates with a simple PHP+MySQL backend. 
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Concluding remarks
 
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+It turned out to be quite a substantial task, but I've been able to implement almost all of the functionalities I imagined beforehand. For a sort-of-production build only an additional security checkup and an authorization system would be required - which should be easy to introduce with manually handled user creation.
+Among several todos are (1) custom styling, (2) refactoring saga system, as it's not at all dry atm, quite moist in fact, (3) optimization of multiple renders and memoizing selectors, (4) splitting and recomposing some of the larger components. 
+Licensed MIT.
